@@ -18,6 +18,14 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* [추가] BGM 버튼 스타일 */
+        #bgm-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1001;
+            width: 38px; height: 38px; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.2rem;
+        }
+
         /* [최적화] 꽃잎 효과 GPU 가속 */
         #petal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
         .petal { 
@@ -92,7 +100,12 @@
         .acc-c.open { max-height: 120px; padding: 15px; }
     </style>
 </head>
-<body>
+<body onclick="initAudio()">
+
+    <audio id="bgm" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <div id="bgm-btn" onclick="toggleAudio(event)">🔇</div>
 
     <div id="petal-container"></div>
 
@@ -192,10 +205,35 @@
     </div>
 
     <script>
-        // [최적화] 꽃잎 효과 생성 주기 완화
+        // [추가] BGM 로직
+        const audio = document.getElementById('bgm');
+        const audioBtn = document.getElementById('bgm-btn');
+        let audioStarted = false;
+
+        function initAudio() {
+            if (!audioStarted) {
+                audio.play();
+                audioBtn.innerText = '🎵';
+                audioStarted = true;
+            }
+        }
+
+        function toggleAudio(event) {
+            event.stopPropagation(); // body 클릭 이벤트 중복 방지
+            if (audio.paused) {
+                audio.play();
+                audioBtn.innerText = '🎵';
+                audioStarted = true;
+            } else {
+                audio.pause();
+                audioBtn.innerText = '🔇';
+            }
+        }
+
+        // 꽃잎 효과
         const container = document.getElementById('petal-container');
         function createPetal() {
-            if (container.children.length > 20) return; // 최대 개수 제한
+            if (container.children.length > 20) return;
             const petal = document.createElement('div');
             petal.classList.add('petal');
             petal.style.left = Math.random() * 100 + 'vw';
@@ -224,7 +262,6 @@
             });
         });
 
-        // [최적화] 한 번 나타난 섹션은 감시 해제하여 리소스 절약
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(e => { 
                 if(e.isIntersecting) {
@@ -245,5 +282,4 @@
         updateDday();
     </script>
 </body>
-
 </html>
