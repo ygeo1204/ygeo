@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>어연걸 & 김소정 결혼식 초대장</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #b4975a; --bg: #fcfbf9; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Noto Serif KR', serif; background-color: var(--bg); color: #333; line-height: 1.6; overflow-x: hidden; }
+
+        /* 꽃잎 효과 */
+        #petal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .petal { position: absolute; background: #ffdae0; border-radius: 150% 0 150% 0; opacity: 0.6; animation: fall linear infinite; }
+        @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(360deg); } }
+
+        /* 섹션 공통 애니메이션 */
+        section { padding: 80px 20px; text-align: center; max-width: 500px; margin: 0 auto; opacity: 0; transform: translateY(30px); transition: all 1.2s ease-out; }
+        section.visible { opacity: 1; transform: translateY(0); }
+        .title-sub { font-family: 'Montserrat'; font-size: 0.75rem; color: var(--accent); letter-spacing: 4px; margin-bottom: 10px; }
+
+        /* 메인 비디오 커버 */
+        .hero { position: relative; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; color: white; margin: 0; max-width: none; }
+        .hero video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+        .hero-content { z-index: 10; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+
+        /* [업그레이드] 갤러리 애니메이션 */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 30px; }
+        .gallery-item { 
+            width: 100%; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; cursor: pointer;
+            opacity: 0; transform: translateY(20px); transition: all 0.6s ease;
+        }
+        /* 섹션이 보일 때 사진이 순차적으로 올라옴 */
+        section.visible .gallery-item { opacity: 1; transform: translateY(0); }
+        section.visible .gallery-item:nth-child(1) { transition-delay: 0.2s; }
+        section.visible .gallery-item:nth-child(2) { transition-delay: 0.4s; }
+        section.visible .gallery-item:nth-child(3) { transition-delay: 0.6s; }
+        section.visible .gallery-item:nth-child(4) { transition-delay: 0.8s; }
+
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+        .gallery-item:hover img { transform: scale(1.08); }
+
+        /* [필수] 사진 확대 라이트박스 */
+        #lightbox { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; cursor: zoom-out;
+        }
+        #lightbox img { max-width: 90%; max-height: 80%; border-radius: 4px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+
+        /* 감성 캘린더 */
+        .calendar-box { background: white; padding: 30px 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); margin-top: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; font-size: 0.9rem; margin-top: 20px; }
+        .sun { color: #e21e26; }
+        .wedding-day { background: var(--accent); color: white; border-radius: 50%; width: 28px; height: 28px; line-height: 28px; margin: 0 auto; font-weight: bold; }
+
+        /* 지도 및 버튼 */
+        .mini-map { width: 100%; height: 200px; background: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800') center/cover; border-radius: 5px; margin: 20px 0; border: 1px solid #eee; }
+        .map-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; }
+        .map-btn { padding: 12px 0; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold; color: white; }
+        .naver { background: #03C75A; } .kakao { background: #FEE500; color: #3C1E1E; } .tmap { background: #E21E26; }
+
+        /* 아코디언 */
+        .acc { border: 1px solid #eee; background: white; margin-bottom: 10px; border-radius: 5px; overflow: hidden; }
+        .acc-h { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        .acc-c { max-height: 0; padding: 0 15px; transition: 0.3s; background: #fafafa; font-size: 0.85rem; text-align: left; }
+        .acc-c.open { max-height: 100px; padding: 15px; }
+    </style>
+</head>
+<body>
+
+    <div id="petal-container"></div>
+
+    <div class="hero">
+        <video autoplay muted loop playsinline>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <div class="hero-content">
+            <p style="letter-spacing: 5px; font-size: 0.8rem; margin-bottom: 20px;">WE ARE GETTING MARRIED</p>
+            <h1 style="font-family: 'Montserrat'; font-size: 2.2rem; font-weight: 300;">YEON GEOL & SO JEONG</h1>
+            <p style="margin-top: 20px; letter-spacing: 2px;">2026. 09. 20. SUN PM 12:30</p>
+        </div>
+    </div>
+
+    <section>
+        <div class="title-sub">INVITATION</div>
+        <h2 style="font-weight: 400; margin-bottom: 30px;">초대합니다</h2>
+        <p style="line-height: 2.2; font-weight: 300;">
+            서로의 온기가 되어줄 약속<br>
+            같은 곳을 바라보며 걷기 시작한 두 사람이<br>
+            이제 하나의 길을 함께 가려 합니다.<br><br>
+            저희의 시작을 축복해주시는 그 마음을<br>
+            소중히 간직하며 예쁘게 잘 살겠습니다.
+        </p>
+        <div style="margin-top: 40px; font-size: 1.1rem;">신랑 어연걸 · 신부 김소정</div>
+    </section>
+
+    <section id="gallery-section">
+        <div class="title-sub">GALLERY</div>
+        <h2 style="font-weight: 400; margin-bottom: 10px;">우리의 순간</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519225495810-751783066acc?w=600"></div>
+        </div>
+    </section>
+
+    <section>
+        <div class="title-sub">SEPTEMBER</div>
+        <div class="calendar-box">
+            <div style="font-family: 'Montserrat'; font-size: 1.2rem; margin-bottom: 10px;">2026. 09. 20</div>
+            <div class="calendar-grid">
+                <div class="sun">S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                <div style="color:#ccc">1</div><div style="color:#ccc">2</div><div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
+                <div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div>
+                <div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div>
+                <div class="wedding-day">20</div><div>21</div><div>22</div><div>23</div><div>24</div><div>25</div><div>26</div>
+                <div>27</div><div>28</div><div>29</div><div>30</div>
+            </div>
+            <p id="dday" style="margin-top: 30px; font-weight: bold; color: var(--accent);"></p>
+        </div>
+    </section>
+
+    <section>
+    <div class="title-sub">LOCATION</div>
+    <h2 style="font-weight: 400; margin-bottom: 20px;">오시는 길</h2>
+    <p><strong>KU컨벤션웨딩홀</strong></p>
+    <p style="font-size: 0.85rem; color: #666;">서울특별시 광진구 아차산로 262</p>
+    
+    <a href="https://map.naver.com/v5/search/KU컨벤션웨딩홀" target="_blank" style="display: block; text-decoration: none;">
+        <div style="width: 100%; height: 250px; border-radius: 8px; overflow: hidden; margin: 20px 0; border: 1px solid #eee; position: relative; background: url('https://api.map.naver.com/staticmap/v3/staticmap?crs=EPSG:3857&scale=2&w=500&h=250&center=127.0722,37.5422&level=15&markers=type:d|size:mid|pos:127.0722%2037.5422|color:red') center/cover;">
+            <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 4px; font-size: 0.7rem; color: #333;">지도 크게보기</div>
+        </div>
+    </a>
+
+    <div style="text-align: left; font-size: 0.85rem; margin-top: 20px; line-height: 1.8;">
+        <p><strong>지하철:</strong> 2, 7호선 건대입구역 4번 출구 (도보 5분)</p>
+        <p><strong>주차:</strong> 웨딩홀 및 교내 주차장 (2시간 무료)</p>
+    </div>
+    
+    <div class="map-grid">
+        <a href="https://map.naver.com/v5/search/KU컨벤션웨딩홀" target="_blank" class="map-btn naver">네이버</a>
+        <a href="https://map.kakao.com/link/to/KU컨벤션웨딩홀,37.5422,127.0722" target="_blank" class="map-btn kakao">카카오</a>
+    </div>
+</section>
+
+    <section>
+        <div class="title-sub">CONTACT</div>
+        <h2 style="font-weight: 400; margin-bottom: 30px;">마음 전하실 곳</h2>
+        <div class="acc">
+            <div class="acc-h" onclick="toggleAcc(this)">신랑측 계좌번호 <span>∨</span></div>
+            <div class="acc-c"><p>신한은행 110-123-456789 (어연걸)</p></div>
+        </div>
+        <div class="acc">
+            <div class="acc-h" onclick="toggleAcc(this)">신부측 계좌번호 <span>∨</span></div>
+            <div class="acc-c"><p>우리은행 1002-123-456789 (김소정)</p></div>
+        </div>
+    </section>
+
+    <footer style="padding: 40px 20px; font-size: 0.75rem; color: #999; background: #f4f4f4; text-align: center;">
+        © 2026 Yeon-geol & So-jeong. All Rights Reserved.
+    </footer>
+
+    <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="">
+    </div>
+
+    <script>
+        // 꽃잎 효과
+        const container = document.getElementById('petal-container');
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.width = Math.random() * 8 + 5 + 'px';
+            petal.style.height = petal.style.width;
+            petal.style.animationDuration = Math.random() * 3 + 4 + 's';
+            container.appendChild(petal);
+            setTimeout(() => petal.remove(), 6000);
+        }
+        setInterval(createPetal, 400);
+
+        // 아코디언
+        function toggleAcc(el) {
+            const content = el.nextElementSibling;
+            content.classList.toggle('open');
+            el.querySelector('span').innerText = content.classList.contains('open') ? '∧' : '∨';
+        }
+
+        // [추가] 사진 확대 기능
+        const galleryItems = document.querySelectorAll('.gallery-item img');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                lightboxImg.src = item.src;
+                lightbox.style.display = 'flex';
+            });
+        });
+
+        // 스크롤 감지 애니메이션
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { 
+                if(e.isIntersecting) e.target.classList.add('visible'); 
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+        // D-Day 계산
+        const weddingDay = new Date("2026-09-20T12:30:00").getTime();
+        function updateDday() {
+            const now = new Date().getTime();
+            const diff = weddingDay - now;
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('dday').innerText = days > 0 ? `예식까지 ${days}일 남았습니다` : "오늘이 바로 그날입니다! 🎉";
+        }
+        updateDday();
+    </script>
+</body>
+</html>
