@@ -6,306 +6,99 @@
     <title>어연걸 & 김소정 결혼식 초대장</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
     <style>
-:root { 
-    --accent:#b4975a; 
-    --bg:#fcfbf9; 
-    --white:#ffffff; 
-}
+        :root { --accent: #b4975a; --bg: #fcfbf9; --white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Noto Serif KR', serif; 
+            background-color: var(--bg); 
+            color: #333; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
+        /* [추가] BGM 버튼 스타일 */
+        #bgm-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1001;
+            width: 38px; height: 38px; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; font-size: 1.2rem;
+        }
 
-body{
-font-family:'Noto Serif KR',serif;
-background-color:var(--bg);
-color:#333;
-line-height:1.6;
-overflow-x:hidden;
--webkit-font-smoothing:antialiased;
-}
+        /* [최적화] 꽃잎 효과 GPU 가속 */
+        #petal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .petal { 
+            position: absolute; background: #ffdae0; border-radius: 150% 0 150% 0; opacity: 0.6; 
+            animation: fall linear infinite; 
+            will-change: transform;
+        }
+        @keyframes fall { 
+            0% { transform: translateY(-10vh) rotate(0deg); } 
+            100% { transform: translateY(110vh) rotate(360deg); } 
+        }
 
-/* BGM 버튼 */
-#bgm-btn{
-position:fixed;
-top:20px;
-right:20px;
-z-index:1001;
-width:38px;
-height:38px;
-background:rgba(255,255,255,0.85);
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-box-shadow:0 4px 14px rgba(0,0,0,0.12);
-cursor:pointer;
-font-size:1.2rem;
-backdrop-filter:blur(4px);
-}
+        /* [최적화] 섹션 애니메이션 가속 */
+        section { 
+            padding: 80px 20px; text-align: center; max-width: 500px; margin: 0 auto; 
+            opacity: 0; transform: translateY(30px) translateZ(0); 
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            will-change: transform, opacity;
+        }
+        section.visible { opacity: 1; transform: translateY(0) translateZ(0); }
+        .title-sub { font-family: 'Montserrat'; font-size: 0.75rem; color: var(--accent); letter-spacing: 4px; margin-bottom: 10px; }
 
-/* 꽃잎 */
-#petal-container{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:100;
-}
+        /* 메인 비디오 커버 */
+        .hero { position: relative; height: 30vh; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; color: white; margin: 0; max-width: none; }
+        .hero video { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            object-fit: cover; opacity: 0.5;
+            transform: translateZ(0);
+        }
+        .hero-content { z-index: 10; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
 
-.petal{
-position:absolute;
-background:#ffdae0;
-border-radius:150% 0 150% 0;
-opacity:.6;
-animation:fall linear infinite;
-will-change:transform;
-}
+        /* [최적화] 갤러리 애니메이션 가속 */
+        .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 30px; }
+        .gallery-item { 
+            width: 100%; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; cursor: pointer;
+            opacity: 0; transform: translateY(20px) translateZ(0); 
+            transition: all 0.6s ease-out;
+            will-change: transform, opacity;
+        }
+        section.visible .gallery-item { opacity: 1; transform: translateY(0) translateZ(0); }
+        section.visible .gallery-item:nth-child(1) { transition-delay: 0.1s; }
+        section.visible .gallery-item:nth-child(2) { transition-delay: 0.2s; }
+        section.visible .gallery-item:nth-child(3) { transition-delay: 0.3s; }
+        section.visible .gallery-item:nth-child(4) { transition-delay: 0.4s; }
 
-@keyframes fall{
-0%{transform:translateY(-10vh) rotate(0deg);}
-100%{transform:translateY(110vh) rotate(360deg);}
-}
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+        .gallery-item:hover img { transform: scale(1.05); }
 
-/* 섹션 */
-section{
-padding:80px 20px;
-text-align:center;
-max-width:500px;
-margin:0 auto;
-opacity:0;
-transform:translateY(30px) translateZ(0);
-transition:all 1s cubic-bezier(.25,.46,.45,.94);
-will-change:transform,opacity;
-}
+        /* 사진 확대 라이트박스 */
+        #lightbox { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 2000; display: none; 
+            align-items: center; justify-content: center; cursor: zoom-out;
+        }
+        #lightbox img { max-width: 95%; max-height: 85%; border-radius: 4px; }
 
-section.visible{
-opacity:1;
-transform:translateY(0) translateZ(0);
-}
+        /* 감성 캘린더 */
+        .calendar-box { background: white; padding: 30px 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); margin-top: 20px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; font-size: 0.9rem; margin-top: 20px; }
+        .sun { color: #e21e26; }
+        .wedding-day { background: var(--accent); color: white; border-radius: 50%; width: 28px; height: 28px; line-height: 28px; margin: 0 auto; font-weight: bold; }
 
-.title-sub{
-font-family:'Montserrat';
-font-size:.75rem;
-color:var(--accent);
-letter-spacing:4px;
-margin-bottom:10px;
-}
+        /* 지도 버튼 */
+        .map-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 15px; }
+        .map-btn { padding: 12px 0; border-radius: 6px; text-decoration: none; font-size: 0.8rem; font-weight: bold; color: white; }
+        .naver { background: #03C75A; } .kakao { background: #FEE500; color: #3C1E1E; }
 
-/* 메인 비디오 */
-.hero{
-position:relative;
-height:60vh;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#000;
-color:white;
-margin:0;
-max-width:none;
-}
-
-.hero video{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-object-fit:cover;
-opacity:.55;
-transform:translateZ(0);
-}
-
-.hero-content{
-z-index:10;
-text-shadow:0 2px 10px rgba(0,0,0,0.35);
-}
-
-/* 갤러리 */
-.gallery-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-margin-top:30px;
-}
-
-.gallery-item{
-width:100%;
-aspect-ratio:3/4;
-overflow:hidden;
-border-radius:6px;
-cursor:pointer;
-
-opacity:0;
-transform:translateY(20px) translateZ(0);
-
-transition:all .6s ease-out;
-will-change:transform,opacity;
-
-box-shadow:0 8px 24px rgba(0,0,0,0.08);
-}
-
-section.visible .gallery-item{
-opacity:1;
-transform:translateY(0) translateZ(0);
-}
-
-section.visible .gallery-item:nth-child(1){transition-delay:.1s;}
-section.visible .gallery-item:nth-child(2){transition-delay:.2s;}
-section.visible .gallery-item:nth-child(3){transition-delay:.3s;}
-section.visible .gallery-item:nth-child(4){transition-delay:.4s;}
-
-.gallery-item img{
-width:100%;
-height:100%;
-object-fit:cover;
-transition:transform .5s ease, filter .4s ease;
-}
-
-.gallery-item:hover img{
-transform:scale(1.08);
-filter:brightness(1.05);
-}
-
-/* 라이트박스 */
-#lightbox{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,.95);
-z-index:2000;
-display:none;
-align-items:center;
-justify-content:center;
-cursor:zoom-out;
-}
-
-#lightbox img{
-max-width:95%;
-max-height:85%;
-border-radius:6px;
-
-transform:scale(.92);
-opacity:0;
-
-transition:all .35s ease;
-}
-
-#lightbox.show img{
-transform:scale(1);
-opacity:1;
-}
-
-/* 캘린더 */
-.calendar-box{
-background:white;
-padding:34px 24px;
-border-radius:10px;
-
-box-shadow:
-0 10px 25px rgba(0,0,0,0.05),
-0 2px 6px rgba(0,0,0,0.03);
-
-margin-top:24px;
-}
-
-.calendar-grid{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-gap:10px;
-font-size:.9rem;
-margin-top:20px;
-}
-
-.sun{
-color:#e21e26;
-}
-
-.wedding-day{
-background:var(--accent);
-color:white;
-border-radius:50%;
-width:30px;
-height:30px;
-line-height:30px;
-margin:0 auto;
-font-weight:bold;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
-}
-
-/* 지도 버튼 */
-.map-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-top:18px;
-}
-
-.map-btn{
-padding:12px 0;
-border-radius:8px;
-text-decoration:none;
-font-size:.82rem;
-font-weight:bold;
-color:white;
-
-transition:.25s;
-}
-
-.map-btn:active{
-transform:scale(.96);
-}
-
-.naver{
-background:#03C75A;
-}
-
-.kakao{
-background:#FEE500;
-color:#3C1E1E;
-}
-
-/* 아코디언 */
-.acc{
-border:1px solid #eee;
-background:white;
-margin-bottom:10px;
-border-radius:8px;
-overflow:hidden;
-
-box-shadow:0 4px 12px rgba(0,0,0,0.04);
-}
-
-.acc-h{
-padding:15px;
-cursor:pointer;
-display:flex;
-justify-content:space-between;
-font-size:.9rem;
-}
-
-.acc-c{
-max-height:0;
-padding:0 15px;
-transition:.3s ease;
-background:#fafafa;
-font-size:.85rem;
-text-align:left;
-}
-
-.acc-c.open{
-max-height:120px;
-padding:15px;
-}
-</style>
+        /* 아코디언 */
+        .acc { border: 1px solid #eee; background: white; margin-bottom: 10px; border-radius: 5px; overflow: hidden; }
+        .acc-h { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        .acc-c { max-height: 0; padding: 0 15px; transition: 0.3s ease; background: #fafafa; font-size: 0.85rem; text-align: left; }
+        .acc-c.open { max-height: 120px; padding: 15px; }
+    </style>
 </head>
 <body onclick="initAudio()">
 
@@ -507,6 +300,7 @@ YEON GEOL & SO JUNG
     </script>
 </body>
 </html>
+
 
 
 
