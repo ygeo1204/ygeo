@@ -68,7 +68,7 @@ body {
 
 /* ═══ HERO ═══ */
 .hero {
-  min-height: 100svh;
+  height: calc(var(--vh) * 100);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   position: relative; overflow: hidden;
@@ -104,6 +104,8 @@ body {
   height: calc(100% + 2px);
   object-fit: cover;
   z-index: 0;
+  transform: translateZ(0);
+  will-change: transform;
 
   /* GPU 합성 레이어 강제 승격 */
   -webkit-transform: translate3d(0,0,0);
@@ -119,6 +121,11 @@ body {
   transition: opacity 0.5s ease;
 }
 .hero-video.loaded { opacity: 1; }
+
+body{
+  font-family: "Apple SD Gothic Neo", sans-serif;
+  overscroll-behavior: none;
+}
 
 .hero-overlay {
   position: absolute; inset: 0;
@@ -1162,5 +1169,6 @@ window.addEventListener('resize', setScreenSize);
 </script>
 </body>
 </html>
+
 
 
