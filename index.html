@@ -78,8 +78,16 @@ body {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; z-index: 0;
-  /* ✏️ src 속성에 실제 동영상 파일 경로를 넣으세요 */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* 로딩 완료 전엔 투명, 준비되면 부드럽게 페이드인 */
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
+.hero-video.loaded { opacity: 1; }
 
 .hero-overlay {
   position: absolute; inset: 0;
@@ -91,6 +99,11 @@ body {
   position: absolute; inset: 0;
   background: linear-gradient(160deg, #fdf8f3 0%, #f0e4dc 45%, #e4d0c8 100%);
   z-index: 0;
+  transition: opacity 0.5s ease;
+}
+.hero-fallback.hide {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* 꽃잎 */
@@ -477,8 +490,13 @@ body {
   -->
   <video class="hero-video" id="hero-video"
     autoplay muted loop playsinline
-    poster="YOUR_POSTER.jpg">
-    <source src="https://github.com/ygeo1204/ygeo/raw/refs/heads/main/%EB%AA%A8%EC%85%98%ED%8F%AC%ED%86%A01.mp4" type="video/mp4">
+    webkit-playsinline
+    x5-playsinline
+    preload="auto"
+    fetchpriority="high"
+    disablepictureinpicture
+    poster="https://raw.githubusercontent.com/ygeo1204/ygeo/main/KakaoTalk_20260308_195422244.jpg">
+    <source src="https://raw.githubusercontent.com/ygeo1204/ygeo/main/%EB%AA%A8%EC%85%98%ED%8F%AC%ED%86%A01.mp4" type="video/mp4">
   </video>
 
   <div class="hero-fallback" id="hero-fallback"></div>
@@ -498,7 +516,7 @@ body {
 
   <div class="hero-content">
     <p class="hero-label">We're getting married</p>
-    <div class="hero-monogram">M &amp; S</div>
+    <div class="hero-monogram">Y &amp; S</div>
     <div class="hero-names">어연걸 &nbsp;♥&nbsp; 김소정</div>
     <div class="hero-divider"><span>✦</span></div>
     <div class="hero-date">2026년 9월 20일 일요일 오후 1시 20분</div>
@@ -549,6 +567,22 @@ body {
         <a href="sms:010-9895-4717" class="contact-btn sms">✉️ 문자</a>
       </div>
     </div>
+<!--    <div class="contact-card">
+      <div class="contact-role">신랑 아버지</div>
+      <div class="contact-name">김철수</div>
+      <div class="contact-btns">
+        <a href="tel:010-2222-2222" class="contact-btn call">📞 전화</a>
+        <a href="sms:010-2222-2222" class="contact-btn sms">✉️ 문자</a>
+      </div>
+    </div>
+    <div class="contact-card">
+      <div class="contact-role">신부 아버지</div>
+      <div class="contact-name">이영수</div>
+      <div class="contact-btns">
+        <a href="tel:010-3333-3333" class="contact-btn call">📞 전화</a>
+        <a href="sms:010-3333-3333" class="contact-btn sms">✉️ 문자</a>
+      </div>
+    </div> -->
   </div>
 </section>
 
@@ -622,10 +656,18 @@ body {
   <h2 class="section-title">오시는 길</h2>
 
   <!--
-    KU컨벤션웨딩홀 — 건국대학교 동문회관
+    KU컨벤션웨딩홀 — 건국대학교 새천년관
     좌표: 37.5423, 127.0731
   -->
   <div class="map-frame">
+    <!--
+      핀이 정확히 표시되려면 구글 지도에서 아래 단계로 직접 코드를 생성하는 걸 권장해요:
+      1. maps.google.com 에서 "서울 광진구 아차산로36길 5" 검색
+      2. 공유 → 지도 퍼가기 → HTML 복사
+      3. 아래 iframe의 src 전체를 붙여넣기
+
+      현재는 주소 검색 기반 URL로 설정되어 있습니다.
+    -->
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3163.711635192935!2d127.07198951117145!3d37.53829432563085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4e7ab9c9393%3A0x4123e20bc8aed54b!2z7ISc7Jq47Yq567OE7IucIOq0keynhOq1rCDslYTssKjsgrDroZwzNuq4uCA1!5e0!3m2!1sko!2skr!4v1773016197550!5m2!1sko!2skr"
       allowfullscreen=""
@@ -637,7 +679,7 @@ body {
 
   <p class="location-name">KU컨벤션웨딩홀</p>
   <p class="location-detail">
-    서울 광진구 아차산로36길 5<br>
+    서울특별시 광진구 능동로 120<br>
     건국대학교 동문회관
   </p>
 
@@ -735,7 +777,7 @@ body {
 
 <!-- ══ CLOSING ══ -->
 <section class="section closing-section">
-  <div class="closing-monogram">M &amp; S</div>
+  <div class="closing-monogram">Y &amp; S</div>
   <div class="closing-text">forever begins today</div>
   <button class="share-btn" onclick="shareInvite()">✉️ &nbsp;청첩장 공유하기</button>
 </section>
@@ -773,37 +815,47 @@ function toggleMusic() {
   }
 }
 
-/* ─── VIDEO FALLBACK ─── */
-const heroVideo  = document.getElementById('hero-video');
-const heroFback  = document.getElementById('hero-fallback');
+/* ─── VIDEO — 로딩 후 부드러운 페이드인 + 모바일 자동정지 방지 ─── */
+const heroVideo = document.getElementById('hero-video');
+const heroFback = document.getElementById('hero-fallback');
 
 function showFallback() {
   heroVideo.style.display = 'none';
-  heroFback.style.display = 'block';
+}
+
+function onVideoReady() {
+  // 영상이 첫 프레임 준비되면 페이드인, 플레이스홀더 페이드아웃
+  heroVideo.classList.add('loaded');
+  heroFback.classList.add('hide');
+  heroVideo.play().catch(() => {});
 }
 
 heroVideo.addEventListener('error', showFallback);
-heroVideo.addEventListener('loadeddata', () => { heroFback.style.display = 'none'; });
-setTimeout(() => { if (heroVideo.readyState === 0) showFallback(); }, 2500);
+
+// canplay: 첫 프레임 디코딩 완료 — 가장 빠른 시점
+heroVideo.addEventListener('canplay', onVideoReady, { once: true });
+
+// 혹시 이미 캐시되어 있을 경우 (readyState >= 3이면 이미 재생 가능)
+if (heroVideo.readyState >= 3) onVideoReady();
+
+// 2.5초 후에도 안 뜨면 폴백 유지 (이미 fallback이 보이고 있으므로 별도 처리 불필요)
+setTimeout(() => {
+  if (!heroVideo.classList.contains('loaded')) {
+    showFallback();
+  }
+}, 2500);
 
 // iOS/Android가 스크롤 중 영상을 멈추면 자동으로 다시 재생
 heroVideo.addEventListener('pause', () => {
-  // 라이트박스가 열려 있거나 사용자가 직접 멈춘 게 아닐 때만 재개
   if (!document.getElementById('lightbox').classList.contains('open')) {
     heroVideo.play().catch(() => {});
   }
 });
 
-// 히어로 섹션이 뷰포트에 들어올 때 재생, 완전히 벗어나도 재생 유지
-// (벗어난 후 돌아올 때 이미 playing이면 아무것도 안 함)
+// 히어로가 다시 뷰포트에 들어올 때 멈춰 있으면 재개
 const videoObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      // 화면에 들어왔고 멈춰 있으면 재개
-      if (heroVideo.paused) heroVideo.play().catch(() => {});
-    }
-    // 화면 밖으로 나가도 멈추지 않음 — 브라우저가 강제로 멈추면
-    // 위 'pause' 이벤트 리스너가 자동 재개함
+    if (e.isIntersecting && heroVideo.paused) heroVideo.play().catch(() => {});
   });
 }, { threshold: 0 });
 
@@ -818,12 +870,14 @@ document.querySelectorAll('.section').forEach(s => revealObs.observe(s));
 
 /* ─── COUNTDOWN ─── */
 function updateCountdown() {
-  const diff = new Date('2026-09-20T13:20:00') - new Date();
+  const target = new Date('2026-09-20T13:20:00');
+  const now = new Date();
+  const diff = target - now;
   if (diff <= 0) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='00'); return; }
   document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
-  document.getElementById('cd-h').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
-  document.getElementById('cd-m').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
-  document.getElementById('cd-s').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
@@ -1031,8 +1085,8 @@ function showToast(msg) {
 function shareInvite() {
   if (navigator.share) {
     navigator.share({
-      title: '김민준 ♥ 이서연 결혼합니다',
-      text: '2025년 5월 17일 토요일 오후 1시\nKU컨벤션웨딩홀',
+      title: '어연걸 ♥ 김소정 결혼합니다',
+      text: '2026년 9월 20일 일요일 오후 1시 20분\nKU컨벤션웨딩홀',
       url: window.location.href
     });
   } else {
