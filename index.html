@@ -72,18 +72,49 @@ body {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   position: relative; overflow: hidden;
+  /*
+   * iOS Safari: hero 자체도 별도 레이어로 승격시켜
+   * 내부 영상 레이어의 스크롤 중 재합성을 차단
+   */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  isolation: isolate;
 }
 
+/*
+ * ★ iOS 스크롤 중 영상 사이즈 튐 해결 핵심 ★
+ *
+ * 문제 원인:
+ *   iOS Safari는 스크롤 중 absolute 자식 영상을
+ *   독립 타일 레이어로 분리 → 재합성 시 object-fit 재계산
+ *   → 순간적으로 크기가 달라 보이는 이질감 발생
+ *
+ * 해결:
+ *   1. translate3d + will-change: transform 으로 영상을
+ *      별도 GPU 합성 레이어로 강제 승격
+ *   2. contain: strict 으로 이 요소 바깥의 레이아웃에
+ *      영향을 주지 않도록 격리
+ *   3. width/height를 calc(100% + 2px) 로 1px씩 키워
+ *      object-fit 재계산 시 생기는 서브픽셀 경계 제거
+ */
 .hero-video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover; z-index: 0;
+  position: absolute;
+  top: -1px; left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  object-fit: cover;
+  z-index: 0;
+
+  /* GPU 합성 레이어 강제 승격 */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
   will-change: transform;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* 로딩 완료 전엔 투명, 준비되면 부드럽게 페이드인 */
+  backface-visibility: hidden;
+
+  /* 이 요소의 레이아웃·페인트를 완전 격리 */
+  contain: strict;
+
   opacity: 0;
   transition: opacity 0.5s ease;
 }
@@ -225,7 +256,7 @@ body {
   display:flex; align-items:center; gap:5px;
   padding:7px 12px; border-radius:20px; font-size:11px;
   border:none; cursor:pointer; font-family:'Noto Serif KR',serif;
-  transition:all .2s; text-decoration:none; white-space:nowrap;
+  transition:all .2s; text-decoration:none;
 }
 .contact-btn.call { background:var(--rose); color:white; }
 .contact-btn.sms  { background:var(--petal); color:var(--rose); }
@@ -555,34 +586,18 @@ body {
       <div class="contact-role">000 · 000 장남</div>
       <div class="contact-name">어연걸</div>
       <div class="contact-btns">
-        <a href="tel:010-4023-6189" class="contact-btn call">📞 전화</a>
-        <a href="sms:010-4023-6189" class="contact-btn sms">✉️ 문자</a>
+        <a href="tel:010-4023-6189" class="contact-btn call">📞전화</a>
+        <a href="sms:010-4023-6189" class="contact-btn sms">✉️문자</a>
       </div>
     </div>
     <div class="contact-card">
       <div class="contact-role">000 · 000 장녀</div>
       <div class="contact-name">김소정</div>
       <div class="contact-btns">
-        <a href="tel:010-9895-4717" class="contact-btn call">📞 전화</a>
-        <a href="sms:010-9895-4717" class="contact-btn sms">✉️ 문자</a>
+        <a href="tel:010-9895-4717" class="contact-btn call">📞전화</a>
+        <a href="sms:010-9895-4717" class="contact-btn sms">✉️문자</a>
       </div>
     </div>
-<!--    <div class="contact-card">
-      <div class="contact-role">신랑 아버지</div>
-      <div class="contact-name">김철수</div>
-      <div class="contact-btns">
-        <a href="tel:010-2222-2222" class="contact-btn call">📞 전화</a>
-        <a href="sms:010-2222-2222" class="contact-btn sms">✉️ 문자</a>
-      </div>
-    </div>
-    <div class="contact-card">
-      <div class="contact-role">신부 아버지</div>
-      <div class="contact-name">이영수</div>
-      <div class="contact-btns">
-        <a href="tel:010-3333-3333" class="contact-btn call">📞 전화</a>
-        <a href="sms:010-3333-3333" class="contact-btn sms">✉️ 문자</a>
-      </div>
-    </div> -->
   </div>
 </section>
 
@@ -764,7 +779,6 @@ body {
   <div class="comment-form">
     <div class="comment-inputs">
       <input type="text" id="comment-name" placeholder="이름" maxlength="10">
-      <!--<input type="password" id="comment-pw" placeholder="비밀번호 (삭제용)" maxlength="20">-->
     </div>
     <textarea class="comment-textarea" id="comment-body" placeholder="따뜻한 축하 메시지를 남겨주세요 🌸" maxlength="200"></textarea>
     <button class="comment-submit" onclick="submitComment()">✉️ 메시지 남기기</button>
@@ -824,38 +838,79 @@ function showFallback() {
 }
 
 function onVideoReady() {
-  // 영상이 첫 프레임 준비되면 페이드인, 플레이스홀더 페이드아웃
   heroVideo.classList.add('loaded');
   heroFback.classList.add('hide');
   heroVideo.play().catch(() => {});
 }
 
 heroVideo.addEventListener('error', showFallback);
-
-// canplay: 첫 프레임 디코딩 완료 — 가장 빠른 시점
 heroVideo.addEventListener('canplay', onVideoReady, { once: true });
-
-// 혹시 이미 캐시되어 있을 경우 (readyState >= 3이면 이미 재생 가능)
 if (heroVideo.readyState >= 3) onVideoReady();
 
-// 2.5초 후에도 안 뜨면 폴백 유지 (이미 fallback이 보이고 있으므로 별도 처리 불필요)
 setTimeout(() => {
-  if (!heroVideo.classList.contains('loaded')) {
-    showFallback();
-  }
+  if (!heroVideo.classList.contains('loaded')) showFallback();
 }, 2500);
 
-// iOS/Android가 스크롤 중 영상을 멈추면 자동으로 다시 재생
+/*
+ * ★ iOS 스크롤 중 영상 멈춤 + 사이즈 튐 해결 ★
+ *
+ * iOS Safari는 스크롤 중 영상을 강제로 pause 시킨다.
+ * 단순히 .play() 를 바로 호출하면 재개 직전 프레임에서
+ * 영상 레이어가 순간적으로 재계산되며 "커지는" 이질감이 생긴다.
+ *
+ * 해결 전략:
+ *   pause 감지 → 영상을 순간 투명하게(opacity 0) →
+ *   play() 성공 → 첫 프레임 그려진 후(rAF) 다시 불투명하게
+ *   (사이즈 점프가 투명 구간에 숨겨짐)
+ */
+let videoResumeTimer = null;
+
+function resumeVideo(masked) {
+  if (!heroVideo.classList.contains('loaded')) return;
+  if (!heroVideo.paused) return;
+
+  if (masked) {
+    // 재생 재개 전 순간 투명 처리 (사이즈 점프 마스킹)
+    heroVideo.style.transition = 'none';
+    heroVideo.style.opacity = '0';
+  }
+
+  heroVideo.play().then(() => {
+    if (masked) {
+      // 첫 프레임이 실제로 그려진 직후에 다시 보여줌
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          heroVideo.style.transition = 'opacity 0.2s ease';
+          heroVideo.style.opacity = '1';
+        });
+      });
+    }
+  }).catch(() => {});
+}
+
 heroVideo.addEventListener('pause', () => {
-  if (!document.getElementById('lightbox').classList.contains('open')) {
-    heroVideo.play().catch(() => {});
+  // 라이트박스가 열려 있을 땐 재개하지 않음
+  if (document.getElementById('lightbox').classList.contains('open')) return;
+  // debounce: iOS가 연속으로 pause를 발생시킬 때 중복 호출 방지
+  clearTimeout(videoResumeTimer);
+  videoResumeTimer = setTimeout(() => resumeVideo(true), 80);
+});
+
+// 탭 전환 후 복귀 시에도 재개
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    clearTimeout(videoResumeTimer);
+    videoResumeTimer = setTimeout(() => resumeVideo(false), 100);
   }
 });
 
 // 히어로가 다시 뷰포트에 들어올 때 멈춰 있으면 재개
 const videoObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting && heroVideo.paused) heroVideo.play().catch(() => {});
+    if (e.isIntersecting) {
+      clearTimeout(videoResumeTimer);
+      videoResumeTimer = setTimeout(() => resumeVideo(false), 50);
+    }
   });
 }, { threshold: 0 });
 
@@ -1066,7 +1121,6 @@ function submitComment() {
   saveComments();
   renderComments();
   document.getElementById('comment-name').value = '';
-  document.getElementById('comment-pw').value   = '';
   document.getElementById('comment-body').value = '';
   showToast('메시지가 등록되었습니다 🌸');
 }
@@ -1086,7 +1140,7 @@ function shareInvite() {
   if (navigator.share) {
     navigator.share({
       title: '어연걸 ♥ 김소정 결혼합니다',
-      text: '2026년 9월 20일 일요일 오후 1시 20분\nKU컨벤션웨딩홀',
+      text: '2026년 9월 20일 일요일 오후 1시\nKU컨벤션웨딩홀',
       url: window.location.href
     });
   } else {
@@ -1097,4 +1151,3 @@ function shareInvite() {
 </script>
 </body>
 </html>
-
