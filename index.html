@@ -19,7 +19,8 @@
   --mist: #e8ede8;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth;
+     -webkit-overflow-scrolling: touch; /* 부드러운 관성 스크롤 강제 */}
 
 body {
   background: var(--ivory);
@@ -1174,11 +1175,11 @@ function setScreenSize() {
 // 초기 실행 및 화면 크기 변경 시 재실행
 setScreenSize();
 window.addEventListener('resize', setScreenSize);
--webkit-overflow-scrolling: touch; /* 부드러운 관성 스크롤 강제 */
 // 만약 기존에 window.onload가 있다면 그 안에 setScreenSize(); 를 넣으셔도 됩니다.
 </script>
 </body>
 </html>
+
 
 
 
