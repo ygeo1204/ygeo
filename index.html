@@ -210,7 +210,7 @@ body {
 .contact-btns { display:flex; gap:8px; justify-content:center; }
 .contact-btn {
   display:flex; align-items:center; gap:5px;
-  padding:7px 12px; border-radius:20px; font-size:11px;
+  padding:7px 12px; border-radius:20px; font-size:10px;
   border:none; cursor:pointer; font-family:'Noto Serif KR',serif;
   transition:all .2s; text-decoration:none;
 }
@@ -785,6 +785,29 @@ function showFallback() {
 heroVideo.addEventListener('error', showFallback);
 heroVideo.addEventListener('loadeddata', () => { heroFback.style.display = 'none'; });
 setTimeout(() => { if (heroVideo.readyState === 0) showFallback(); }, 2500);
+
+// iOS/Android가 스크롤 중 영상을 멈추면 자동으로 다시 재생
+heroVideo.addEventListener('pause', () => {
+  // 라이트박스가 열려 있거나 사용자가 직접 멈춘 게 아닐 때만 재개
+  if (!document.getElementById('lightbox').classList.contains('open')) {
+    heroVideo.play().catch(() => {});
+  }
+});
+
+// 히어로 섹션이 뷰포트에 들어올 때 재생, 완전히 벗어나도 재생 유지
+// (벗어난 후 돌아올 때 이미 playing이면 아무것도 안 함)
+const videoObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      // 화면에 들어왔고 멈춰 있으면 재개
+      if (heroVideo.paused) heroVideo.play().catch(() => {});
+    }
+    // 화면 밖으로 나가도 멈추지 않음 — 브라우저가 강제로 멈추면
+    // 위 'pause' 이벤트 리스너가 자동 재개함
+  });
+}, { threshold: 0 });
+
+videoObs.observe(document.querySelector('.hero'));
 
 /* ─── SCROLL REVEAL ─── */
 const revealObs = new IntersectionObserver(
