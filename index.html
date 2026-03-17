@@ -4,11 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>어연걸 ♥ 김소정 - 결혼합니다</title>
+
+<!-- ★ 최적화 1: --vh 즉시 초기화 (렌더링 전에 실행) -->
+<script>
+  document.documentElement.style.setProperty(
+    '--vh', (window.innerHeight * 0.01) + 'px'
+  );
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --vh: 1vh; /* JS 실행 전 폴백값 */
   --ivory: #faf6f0;
   --blush: #e8c4b8;
   --rose: #c97d6e;
@@ -29,6 +38,9 @@ body {
   max-width: 480px;
   margin: 0 auto;
   position: relative;
+  overscroll-behavior: none;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* ═══ MUSIC BUTTON ═══ */
@@ -68,65 +80,44 @@ body {
 
 /* ═══ HERO ═══ */
 .hero {
-  height: calc(var(--vh) * 100);
+  height: calc(var(--vh, 1vh) * 100);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   position: relative; overflow: hidden;
-  /*
-   * iOS Safari: hero 자체도 별도 레이어로 승격시켜
-   * 내부 영상 레이어의 스크롤 중 재합성을 차단
-   */
   -webkit-transform: translate3d(0,0,0);
   transform: translate3d(0,0,0);
   isolation: isolate;
 }
 
 /*
- * ★ iOS 스크롤 중 영상 사이즈 튐 해결 핵심 ★
- *
- * 문제 원인:
- *   iOS Safari는 스크롤 중 absolute 자식 영상을
- *   독립 타일 레이어로 분리 → 재합성 시 object-fit 재계산
- *   → 순간적으로 크기가 달라 보이는 이질감 발생
- *
- * 해결:
- *   1. translate3d + will-change: transform 으로 영상을
- *      별도 GPU 합성 레이어로 강제 승격
- *   2. contain: strict 으로 이 요소 바깥의 레이아웃에
- *      영향을 주지 않도록 격리
- *   3. width/height를 calc(100% + 2px) 로 1px씩 키워
- *      object-fit 재계산 시 생기는 서브픽셀 경계 제거
+ * ★ 최적화 2: position fixed 로 변경
+ *   iOS Safari는 absolute 영상을 스크롤 중 매번 부모 기준으로 재합성.
+ *   fixed 로 바꾸면 뷰포트 기준 고정 레이어가 되어 재합성 자체를 차단.
  */
 .hero-video {
-  position: absolute;
-  top: -1px; left: -1px;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
+  position: fixed;       /* absolute → fixed */
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;      /* body max-width 맞춤 */
+  height: 100%;
   object-fit: cover;
   z-index: 0;
-  transform: translateZ(0);
-  will-change: transform;
 
   /* GPU 합성 레이어 강제 승격 */
-  -webkit-transform: translate3d(0,0,0);
-  transform: translate3d(0,0,0);
+  -webkit-transform: translateX(-50%) translateZ(0);
+  transform: translateX(-50%) translateZ(0);
   will-change: transform;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 
-  /* 이 요소의 레이아웃·페인트를 완전 격리 */
-  contain: strict;
+  /* ★ 최적화 3: contain에서 size 제외 (동적 크기 요소엔 strict 역효과) */
+  contain: layout style;
 
   opacity: 0;
   transition: opacity 0.5s ease;
 }
 .hero-video.loaded { opacity: 1; }
-
-body{
-  font-family: "Apple SD Gothic Neo", sans-serif;
-  overscroll-behavior: none;
-  backface-visibility: hidden;
-}
 
 .hero-overlay {
   position: absolute; inset: 0;
@@ -591,7 +582,6 @@ body{
   <h2 class="section-title">연락하기</h2>
 
   <div class="contact-grid">
-    <!-- ✏️ href의 전화번호를 실제 번호로 교체하세요 -->
     <div class="contact-card">
       <div class="contact-role">000 · 000 장남</div>
       <div class="contact-name">어연걸</div>
@@ -680,19 +670,7 @@ body{
   <p class="section-label">Venue</p>
   <h2 class="section-title">오시는 길</h2>
 
-  <!--
-    KU컨벤션웨딩홀 — 건국대학교 새천년관
-    좌표: 37.5423, 127.0731
-  -->
   <div class="map-frame">
-    <!--
-      핀이 정확히 표시되려면 구글 지도에서 아래 단계로 직접 코드를 생성하는 걸 권장해요:
-      1. maps.google.com 에서 "서울 광진구 아차산로36길 5" 검색
-      2. 공유 → 지도 퍼가기 → HTML 복사
-      3. 아래 iframe의 src 전체를 붙여넣기
-
-      현재는 주소 검색 기반 URL로 설정되어 있습니다.
-    -->
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3163.711635192935!2d127.07198951117145!3d37.53829432563085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4e7ab9c9393%3A0x4123e20bc8aed54b!2z7ISc7Jq47Yq567OE7IucIOq0keynhOq1rCDslYTssKjsgrDroZwzNuq4uCA1!5e0!3m2!1sko!2skr!4v1773016197550!5m2!1sko!2skr"
       allowfullscreen=""
@@ -839,7 +817,7 @@ function toggleMusic() {
   }
 }
 
-/* ─── VIDEO — 로딩 후 부드러운 페이드인 + 모바일 자동정지 방지 ─── */
+/* ─── VIDEO ─── */
 const heroVideo = document.getElementById('hero-video');
 const heroFback = document.getElementById('hero-fallback');
 
@@ -862,16 +840,21 @@ setTimeout(() => {
 }, 2500);
 
 /*
- * ★ iOS 스크롤 중 영상 멈춤 + 사이즈 튐 해결 ★
- *
- * iOS Safari는 스크롤 중 영상을 강제로 pause 시킨다.
- * 단순히 .play() 를 바로 호출하면 재개 직전 프레임에서
- * 영상 레이어가 순간적으로 재계산되며 "커지는" 이질감이 생긴다.
- *
- * 해결 전략:
- *   pause 감지 → 영상을 순간 투명하게(opacity 0) →
- *   play() 성공 → 첫 프레임 그려진 후(rAF) 다시 불투명하게
- *   (사이즈 점프가 투명 구간에 숨겨짐)
+ * ★ 최적화 2: fixed 포지션 + visibility 제어
+ *   hero가 화면에서 벗어나면 visibility:hidden으로
+ *   GPU 레이어를 해제하여 불필요한 합성 비용 절감
+ */
+const heroVisObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    heroVideo.style.visibility = e.isIntersecting ? 'visible' : 'hidden';
+  });
+}, { threshold: 0 });
+heroVisObs.observe(document.querySelector('.hero'));
+
+/*
+ * ★ 최적화 4: resumeVideo — setTimeout(32ms)으로 마스킹 타이밍 안정화
+ *   기존 rAF × 2 방식은 iOS에서 paint 전 실행될 수 있어 프레임 노출 위험.
+ *   32ms(약 2프레임)를 대기하면 실제 화면에 그려진 후 opacity 복구 보장.
  */
 let videoResumeTimer = null;
 
@@ -880,33 +863,26 @@ function resumeVideo(masked) {
   if (!heroVideo.paused) return;
 
   if (masked) {
-    // 재생 재개 전 순간 투명 처리 (사이즈 점프 마스킹)
     heroVideo.style.transition = 'none';
     heroVideo.style.opacity = '0';
   }
 
   heroVideo.play().then(() => {
     if (masked) {
-      // 첫 프레임이 실제로 그려진 직후에 다시 보여줌
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          heroVideo.style.transition = 'opacity 0.2s ease';
-          heroVideo.style.opacity = '1';
-        });
-      });
+      setTimeout(() => {
+        heroVideo.style.transition = 'opacity 0.2s ease';
+        heroVideo.style.opacity = '1';
+      }, 32); /* ← rAF 2중 호출 → setTimeout 32ms 로 교체 */
     }
   }).catch(() => {});
 }
 
 heroVideo.addEventListener('pause', () => {
-  // 라이트박스가 열려 있을 땐 재개하지 않음
   if (document.getElementById('lightbox').classList.contains('open')) return;
-  // debounce: iOS가 연속으로 pause를 발생시킬 때 중복 호출 방지
   clearTimeout(videoResumeTimer);
   videoResumeTimer = setTimeout(() => resumeVideo(true), 80);
 });
 
-// 탭 전환 후 복귀 시에도 재개
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     clearTimeout(videoResumeTimer);
@@ -914,7 +890,21 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// 히어로가 다시 뷰포트에 들어올 때 멈춰 있으면 재개
+/*
+ * ★ 최적화 5: scrollend + scroll 폴백으로 pause 재개 누락 방지
+ *   iOS는 스크롤 끝난 후 resume 이벤트가 늦게 오는 경우가 있어
+ *   scrollend(지원 브라우저) + scroll 멈춤 감지(폴백)를 보조로 추가.
+ */
+window.addEventListener('scrollend', () => {
+  resumeVideo(false);
+}, { passive: true });
+
+let scrollStopTimer = null;
+window.addEventListener('scroll', () => {
+  clearTimeout(scrollStopTimer);
+  scrollStopTimer = setTimeout(() => resumeVideo(false), 150);
+}, { passive: true });
+
 const videoObs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -923,7 +913,6 @@ const videoObs = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0 });
-
 videoObs.observe(document.querySelector('.hero'));
 
 /* ─── SCROLL REVEAL ─── */
@@ -970,15 +959,6 @@ const PHOTO_DATA = [
   {bg:'linear-gradient(135deg,#ccb0a0,#9c7060)',emoji:'🕯️'},
   {bg:'linear-gradient(135deg,#a8bcc8,#607888)',emoji:'💍'}
 ];
-/*
- ✏️ 실제 사진을 사용하려면 PHOTO_DATA를 아래와 같이 교체:
- const PHOTO_DATA = [
-   { src: 'photo01.jpg' },
-   { src: 'photo02.jpg' },
-   ... (20개)
- ];
- 그리고 아래 applyPhoto 함수에서 img 태그 방식으로 교체.
-*/
 
 let curPhoto = 0;
 let lbTouchX = 0;
@@ -1002,9 +982,6 @@ function applyPhoto(direction) {
 
   el.style.background = d.bg;
   el.textContent = d.emoji;
-
-  // 실제 사진 사용 시:
-  // el.innerHTML = `<img src="${d.src}" style="width:100%;height:100%;object-fit:cover;border-radius:16px;">`;
 
   if (direction) {
     const cls = direction === 1 ? 'slide-in-left' : 'slide-in-right';
@@ -1031,7 +1008,6 @@ function changePhoto(dir) {
   }, 160);
 }
 
-// 키보드
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
   if (e.key==='ArrowRight') changePhoto(1);
@@ -1039,7 +1015,6 @@ document.addEventListener('keydown', e => {
   if (e.key==='Escape')     closeLightbox();
 });
 
-// 터치 스와이프
 const lb = document.getElementById('lightbox');
 lb.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, {passive:true});
 lb.addEventListener('touchend',   e => {
@@ -1158,22 +1133,18 @@ function shareInvite() {
     showToast('링크가 복사되었습니다 ✓');
   }
 }
+
+/* ─── VH 재계산 (큰 변화만 반영) ─── */
 let lastHeight = window.innerHeight;
 
 function setScreenSize() {
-    // 실제 높이 변화가 클 때만 (예: 50px 이상) 업데이트하여 스크롤 중 잦은 재계산을 방지
-    if (Math.abs(lastHeight - window.innerHeight) > 50) {
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
-        lastHeight = window.innerHeight;
-    }
+  if (Math.abs(lastHeight - window.innerHeight) > 50) {
+    document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+    lastHeight = window.innerHeight;
+  }
 }
 
-// 초기 실행 및 화면 크기 변경 시 재실행
-setScreenSize();
-window.addEventListener('resize', setScreenSize);
-
-// 만약 기존에 window.onload가 있다면 그 안에 setScreenSize(); 를 넣으셔도 됩니다.
+window.addEventListener('resize', setScreenSize, { passive: true });
 </script>
 </body>
 </html>
