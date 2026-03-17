@@ -383,8 +383,18 @@ body {
 
 /* ═══ LOCATION ═══ */
 .location-section { background:var(--mist); }
-.map-frame { border-radius:16px; overflow:hidden; margin-bottom:20px; box-shadow:0 4px 20px rgba(0,0,0,.12); height:220px; }
-.map-frame iframe { width:100%; height:100%; border:0; display:block; }
+.map-frame {
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);
+  height:auto;          /* ★ 고정 높이 제거 */
+}
+.map-frame img {
+  width:100%;
+  height:auto;          /* ★ 비율 유지 */
+  display:block;
+}
 .location-name { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--deep); margin-bottom:8px; font-style:italic; }
 .location-detail { font-size:13px; color:#6d5f58; line-height:1.8; margin-bottom:20px; }
 .transport-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
