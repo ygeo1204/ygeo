@@ -5,11 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>어연걸 ♥ 김소정 - 결혼합니다</title>
 
-<!-- ★ 최적화 1: --vh 즉시 초기화 (렌더링 전에 실행) -->
+<!--
+  ★ 최적화 1: --vh 즉시 초기화 (렌더링 전에 실행하여 hero 높이 튐 방지)
+  ★ 최적화 2: Safari / 비Safari UA 감지 → 영상 position 전략 분기
+              - Safari(iOS)   : fixed  → 스크롤 중 레이어 재합성 차단
+              - Chrome/카카오 : absolute → fixed가 오히려 분리되어 보이는 현상 방지
+-->
 <script>
-  document.documentElement.style.setProperty(
-    '--vh', (window.innerHeight * 0.01) + 'px'
-  );
+  document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+
+  var ua = navigator.userAgent;
+  var isSafariBrowser = /Safari/.test(ua) &&
+    !/Chrome/.test(ua) &&
+    !/CriOS/.test(ua) &&
+    !/OPiOS/.test(ua) &&
+    !/FxiOS/.test(ua) &&
+    !/KAKAOTALK/.test(ua) &&
+    !/NAVER/.test(ua) &&
+    !/SamsungBrowser/.test(ua);
+
+  document.documentElement.setAttribute('data-browser', isSafariBrowser ? 'safari' : 'other');
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
@@ -17,7 +32,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --vh: 1vh; /* JS 실행 전 폴백값 */
+  --vh: 1vh;
   --ivory: #faf6f0;
   --blush: #e8c4b8;
   --rose: #c97d6e;
@@ -90,34 +105,42 @@ body {
 }
 
 /*
- * ★ 최적화 2: position fixed 로 변경
- *   iOS Safari는 absolute 영상을 스크롤 중 매번 부모 기준으로 재합성.
- *   fixed 로 바꾸면 뷰포트 기준 고정 레이어가 되어 재합성 자체를 차단.
+ * ★ 영상 기본값: absolute (Chrome / 카카오톡 / 기타 WebView용)
+ *   fixed를 쓰면 Chrome 계열에서 스크롤 시 영상이 뷰포트에 고정된 채
+ *   콘텐츠와 분리되어 떠 보이는 이질감 발생 → absolute 유지
  */
 .hero-video {
-  position: fixed;       /* absolute → fixed */
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;      /* body max-width 맞춤 */
-  height: 100%;
+  position: absolute;
+  top: -1px; left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
   object-fit: cover;
   z-index: 0;
-
-  /* GPU 합성 레이어 강제 승격 */
-  -webkit-transform: translateX(-50%) translateZ(0);
-  transform: translateX(-50%) translateZ(0);
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
   will-change: transform;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-
-  /* ★ 최적화 3: contain에서 size 제외 (동적 크기 요소엔 strict 역효과) */
   contain: layout style;
-
   opacity: 0;
   transition: opacity 0.5s ease;
 }
 .hero-video.loaded { opacity: 1; }
+
+/*
+ * ★ Safari 전용: position fixed
+ *   iOS Safari는 absolute 영상을 스크롤 중 부모 기준으로 매번 재합성 →
+ *   fixed로 바꾸면 뷰포트 고정 레이어가 되어 재합성 자체를 차단
+ */
+[data-browser="safari"] .hero-video {
+  position: fixed;
+  top: 0; left: 50%;
+  -webkit-transform: translateX(-50%) translateZ(0);
+  transform: translateX(-50%) translateZ(0);
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+}
 
 .hero-overlay {
   position: absolute; inset: 0;
@@ -131,10 +154,7 @@ body {
   z-index: 0;
   transition: opacity 0.5s ease;
 }
-.hero-fallback.hide {
-  opacity: 0;
-  pointer-events: none;
-}
+.hero-fallback.hide { opacity: 0; pointer-events: none; }
 
 /* 꽃잎 */
 .hero-petals { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
@@ -287,12 +307,10 @@ body {
 .gallery-section { background:var(--deep); }
 .gallery-section .section-label { color:var(--blush); }
 .gallery-section .section-title { color:var(--ivory); }
-
 .gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
 .gallery-thumb {
   aspect-ratio:1; border-radius:6px; overflow:hidden;
-  cursor:pointer; position:relative;
-  transition:transform .2s ease;
+  cursor:pointer; position:relative; transition:transform .2s ease;
 }
 .gallery-thumb:active { transform:scale(.96); }
 .gallery-thumb .thumb-inner {
@@ -301,7 +319,6 @@ body {
   font-size:28px; transition:transform .3s ease;
 }
 .gallery-thumb:hover .thumb-inner { transform:scale(1.06); }
-
 .gallery-thumb:nth-child(1)  .thumb-inner { background:linear-gradient(135deg,#d4a0a0,#c07070); }
 .gallery-thumb:nth-child(2)  .thumb-inner { background:linear-gradient(135deg,#a0b4a0,#708070); }
 .gallery-thumb:nth-child(3)  .thumb-inner { background:linear-gradient(135deg,#c4b090,#a08060); }
@@ -322,49 +339,33 @@ body {
 .gallery-thumb:nth-child(18) .thumb-inner { background:linear-gradient(135deg,#b0c4a8,#708858); }
 .gallery-thumb:nth-child(19) .thumb-inner { background:linear-gradient(135deg,#ccb0a0,#9c7060); }
 .gallery-thumb:nth-child(20) .thumb-inner { background:linear-gradient(135deg,#a8bcc8,#607888); }
-
 .thumb-num { position:absolute; bottom:4px; right:6px; font-size:9px; color:rgba(255,255,255,.6); letter-spacing:1px; }
 
 /* ═══ LIGHTBOX ═══ */
 #lightbox {
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.92);
-  z-index:2000;
+  position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:2000;
   display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none;
-  transition:opacity .3s ease;
+  opacity:0; pointer-events:none; transition:opacity .3s ease;
 }
 #lightbox.open { opacity:1; pointer-events:all; }
-
 .lb-close {
-  position:absolute; top:20px; right:20px;
-  width:40px; height:40px; border-radius:50%;
-  background:rgba(255,255,255,.15); border:none; color:white;
-  font-size:20px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  z-index:10; transition:background .2s;
+  position:absolute; top:20px; right:20px; width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,.15); border:none; color:white; font-size:20px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; z-index:10; transition:background .2s;
 }
 .lb-close:hover { background:rgba(255,255,255,.25); }
-
 .lb-arrow {
-  position:absolute; top:50%; transform:translateY(-50%);
-  width:48px; height:48px; border-radius:50%;
-  background:rgba(255,255,255,.15); border:none; color:white;
-  font-size:24px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  z-index:10; transition:background .2s;
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
+  position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%;
+  background:rgba(255,255,255,.15); border:none; color:white; font-size:24px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; z-index:10; transition:background .2s;
+  backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
 }
 .lb-arrow:hover { background:rgba(255,255,255,.28); }
 .lb-arrow:active { transform:translateY(-50%) scale(.92); }
-.lb-arrow.prev { left:12px; }
-.lb-arrow.next { right:12px; }
-
+.lb-arrow.prev { left:12px; } .lb-arrow.next { right:12px; }
 .lb-display {
   width:320px; height:400px; border-radius:16px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:80px;
+  display:flex; align-items:center; justify-content:center; font-size:80px;
   box-shadow:0 8px 60px rgba(0,0,0,.6);
   transition:transform .25s cubic-bezier(.16,1,.3,1), opacity .25s ease;
 }
@@ -372,10 +373,8 @@ body {
 .lb-display.slide-out-right { transform:translateX(40px); opacity:0; }
 .lb-display.slide-in-left  { animation:slideInLeft .28s cubic-bezier(.16,1,.3,1) both; }
 .lb-display.slide-in-right { animation:slideInRight .28s cubic-bezier(.16,1,.3,1) both; }
-
 @keyframes slideInLeft  { from{transform:translateX(40px);opacity:0} to{transform:translateX(0);opacity:1} }
 @keyframes slideInRight { from{transform:translateX(-40px);opacity:0} to{transform:translateX(0);opacity:1} }
-
 .lb-counter {
   position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
   font-family:'Cormorant Garamond',serif; font-size:14px;
@@ -384,10 +383,7 @@ body {
 
 /* ═══ LOCATION ═══ */
 .location-section { background:var(--mist); }
-.map-frame {
-  border-radius:16px; overflow:hidden; margin-bottom:20px;
-  box-shadow:0 4px 20px rgba(0,0,0,.12); height:220px;
-}
+.map-frame { border-radius:16px; overflow:hidden; margin-bottom:20px; box-shadow:0 4px 20px rgba(0,0,0,.12); height:220px; }
 .map-frame iframe { width:100%; height:100%; border:0; display:block; }
 .location-name { font-family:'Cormorant Garamond',serif; font-size:22px; color:var(--deep); margin-bottom:8px; font-style:italic; }
 .location-detail { font-size:13px; color:#6d5f58; line-height:1.8; margin-bottom:20px; }
@@ -395,7 +391,6 @@ body {
 .transport-card { background:white; border-radius:12px; padding:16px; font-size:12px; color:#6d5f58; line-height:1.8; }
 .transport-card .t-icon { font-size:20px; margin-bottom:8px; display:block; }
 .transport-card .t-label { font-size:10px; letter-spacing:2px; color:var(--sage); display:block; margin-bottom:4px; }
-
 .btn {
   display:flex; align-items:center; justify-content:center; gap:8px;
   width:100%; padding:16px; border-radius:50px; border:none; cursor:pointer;
@@ -450,7 +445,6 @@ body {
   font-family:'Noto Serif KR',serif; font-size:13px; cursor:pointer; transition:all .2s;
 }
 .comment-submit:active { transform:scale(.98); opacity:.9; }
-
 .comments-list { display:flex; flex-direction:column; gap:12px; }
 .comment-item {
   background:white; border-radius:14px; padding:16px;
@@ -473,8 +467,7 @@ body {
 .closing-monogram { font-family:'Great Vibes',cursive; font-size:72px; color:var(--blush); margin-bottom:16px; position:relative; z-index:1; text-shadow:0 0 40px rgba(201,125,110,.3); }
 .closing-text { font-family:'Cormorant Garamond',serif; font-size:18px; color:rgba(255,255,255,.6); letter-spacing:3px; font-style:italic; position:relative; z-index:1; margin-bottom:40px; }
 .share-btn {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:14px 28px; border-radius:50px;
+  display:inline-flex; align-items:center; gap:8px; padding:14px 28px; border-radius:50px;
   border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.7);
   font-size:12px; letter-spacing:2px; cursor:pointer;
   background:transparent; font-family:'Noto Serif KR',serif;
@@ -499,9 +492,6 @@ body {
 </head>
 <body>
 
-<!-- ══ BACKGROUND MUSIC ══
-  ✏️ src에 실제 mp3 파일 경로를 넣으세요. 예: src="bgm.mp3"
--->
 <audio id="bgm" loop preload="none">
   <source src="YOUR_MUSIC.mp3" type="audio/mpeg">
 </audio>
@@ -512,28 +502,18 @@ body {
   </div>
 </button>
 
-<!-- ══ HERO (동영상 배경) ══ -->
+<!-- ══ HERO ══ -->
 <section class="hero">
-  <!--
-    ✏️ 동영상 교체 방법:
-    1. src="YOUR_VIDEO.mp4" → 실제 영상 파일명으로 교체
-    2. poster="YOUR_POSTER.jpg" → 로딩 중 보여줄 썸네일 이미지
-    3. 모션 사진(Live Photo)도 mp4/mov 형식이면 동일하게 사용 가능
-  -->
   <video class="hero-video" id="hero-video"
     autoplay muted loop playsinline
-    webkit-playsinline
-    x5-playsinline
-    preload="auto"
-    fetchpriority="high"
+    webkit-playsinline x5-playsinline
+    preload="auto" fetchpriority="high"
     disablepictureinpicture
     poster="https://raw.githubusercontent.com/ygeo1204/ygeo/main/KakaoTalk_20260308_195422244.jpg">
     <source src="https://github.com/ygeo1204/ygeo/raw/refs/heads/main/%EB%AA%A8%EC%85%98%ED%8F%AC%ED%86%A0_%EC%84%B8%EB%A1%9C%ED%98%95.mp4" type="video/mp4">
   </video>
-
   <div class="hero-fallback" id="hero-fallback"></div>
   <div class="hero-overlay"></div>
-
   <div class="hero-petals">
     <div class="petal"></div><div class="petal"></div><div class="petal"></div>
     <div class="petal"></div><div class="petal"></div><div class="petal"></div>
@@ -545,7 +525,6 @@ body {
     <div class="deco-circle"></div>
     <div class="deco-circle"></div>
   </div>
-
   <div class="hero-content">
     <p class="hero-label">We're getting married</p>
     <div class="hero-monogram">Y &amp; S</div>
@@ -553,7 +532,6 @@ body {
     <div class="hero-divider"><span>✦</span></div>
     <div class="hero-date">2026년 9월 20일 일요일 오후 1시 20분</div>
   </div>
-
   <div class="scroll-hint">
     <span>SCROLL</span>
     <div class="scroll-line"></div>
@@ -580,7 +558,6 @@ body {
 <section class="section contact-section">
   <p class="section-label">Contact</p>
   <h2 class="section-title">연락하기</h2>
-
   <div class="contact-grid">
     <div class="contact-card">
       <div class="contact-role">000 · 000 장남</div>
@@ -609,15 +586,9 @@ body {
     <div class="date-big">20</div>
     <div class="date-year">SEP · 2026 · SUN</div>
     <div class="date-info">
-      <div class="date-info-item">
-        <span class="label">TIME</span><span class="value">오후 1:20</span>
-      </div>
-      <div class="date-info-item">
-        <span class="label">CEREMONY</span><span class="value">약 40분</span>
-      </div>
-      <div class="date-info-item">
-        <span class="label">MEAL</span><span class="value">13:20 ~</span>
-      </div>
+      <div class="date-info-item"><span class="label">TIME</span><span class="value">오후 1:20</span></div>
+      <div class="date-info-item"><span class="label">CEREMONY</span><span class="value">약 40분</span></div>
+      <div class="date-info-item"><span class="label">MEAL</span><span class="value">13:20 ~</span></div>
     </div>
     <div class="countdown">
       <div class="countdown-item"><span class="num" id="cd-d">--</span><span class="unit">DAYS</span></div>
@@ -628,7 +599,7 @@ body {
   </div>
 </section>
 
-<!-- ══ GALLERY (20장) ══ -->
+<!-- ══ GALLERY ══ -->
 <section class="section gallery-section">
   <p class="section-label">Our Moments</p>
   <h2 class="section-title">소중한 순간들</h2>
@@ -669,52 +640,23 @@ body {
 <section class="section location-section">
   <p class="section-label">Venue</p>
   <h2 class="section-title">오시는 길</h2>
-
   <div class="map-frame">
     <iframe
       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3163.711635192935!2d127.07198951117145!3d37.53829432563085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4e7ab9c9393%3A0x4123e20bc8aed54b!2z7ISc7Jq47Yq567OE7IucIOq0keynhOq1rCDslYTssKjsgrDroZwzNuq4uCA1!5e0!3m2!1sko!2skr!4v1773016197550!5m2!1sko!2skr"
-      allowfullscreen=""
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
       title="KU컨벤션웨딩홀 지도">
     </iframe>
   </div>
-
   <p class="location-name">KU컨벤션웨딩홀</p>
-  <p class="location-detail">
-    서울특별시 광진구 능동로 120<br>
-    건국대학교 동문회관
-  </p>
-
+  <p class="location-detail">서울특별시 광진구 능동로 120<br>건국대학교 동문회관</p>
   <div class="transport-cards">
-    <div class="transport-card">
-      <span class="t-icon">🚇</span>
-      <span class="t-label">SUBWAY</span>
-      2호선 건대입구역<br>2번 출구 도보 5분
-    </div>
-    <div class="transport-card">
-      <span class="t-icon">🚌</span>
-      <span class="t-label">BUS</span>
-      간선 240, 721번<br>건국대병원 하차
-    </div>
-    <div class="transport-card">
-      <span class="t-icon">🚗</span>
-      <span class="t-label">CAR</span>
-      건국대 정문 진입<br>새천년관 방향
-    </div>
-    <div class="transport-card">
-      <span class="t-icon">🅿️</span>
-      <span class="t-label">PARKING</span>
-      캠퍼스 내 주차장<br>행사 당일 무료
-    </div>
+    <div class="transport-card"><span class="t-icon">🚇</span><span class="t-label">SUBWAY</span>2호선 건대입구역<br>2번 출구 도보 5분</div>
+    <div class="transport-card"><span class="t-icon">🚌</span><span class="t-label">BUS</span>간선 240, 721번<br>건국대병원 하차</div>
+    <div class="transport-card"><span class="t-icon">🚗</span><span class="t-label">CAR</span>건국대 정문 진입<br>새천년관 방향</div>
+    <div class="transport-card"><span class="t-icon">🅿️</span><span class="t-label">PARKING</span>캠퍼스 내 주차장<br>행사 당일 무료</div>
   </div>
-
-  <a href="https://map.kakao.com/link/search/KU컨벤션센터" class="btn btn-primary" target="_blank">
-    🗺️ 카카오맵으로 보기
-  </a>
-  <a href="https://naver.me/xHPCIGvj" class="btn btn-outline" target="_blank" style="margin-top:8px;">
-    네이버 지도로 보기
-  </a>
+  <a href="https://map.kakao.com/link/search/KU컨벤션센터" class="btn btn-primary" target="_blank">🗺️ 카카오맵으로 보기</a>
+  <a href="https://naver.me/xHPCIGvj" class="btn btn-outline" target="_blank" style="margin-top:8px;">네이버 지도로 보기</a>
 </section>
 
 <!-- ══ ACCOUNT ══ -->
@@ -759,11 +701,10 @@ body {
   </div>
 </section>
 
-<!-- ══ COMMENTS (방명록) ══ -->
+<!-- ══ COMMENTS ══ -->
 <section class="section comment-section">
   <p class="section-label">Guestbook</p>
   <h2 class="section-title">축하 메시지</h2>
-
   <div class="comment-form">
     <div class="comment-inputs">
       <input type="text" id="comment-name" placeholder="이름" maxlength="10">
@@ -771,7 +712,6 @@ body {
     <textarea class="comment-textarea" id="comment-body" placeholder="따뜻한 축하 메시지를 남겨주세요 🌸" maxlength="200"></textarea>
     <button class="comment-submit" onclick="submitComment()">✉️ 메시지 남기기</button>
   </div>
-
   <div class="comments-list" id="comments-list">
     <div class="comment-empty" id="comment-empty">아직 메시지가 없어요.<br>첫 번째 축하 메시지를 남겨주세요! 🌹</div>
   </div>
@@ -787,7 +727,9 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-/* ─── MUSIC ─── */
+/* ════════════════════════════
+   MUSIC
+════════════════════════════ */
 const bgm = document.getElementById('bgm');
 const musicBtn = document.getElementById('music-btn');
 let musicPlaying = false;
@@ -795,84 +737,61 @@ let musicPlaying = false;
 ['touchstart','click'].forEach(ev =>
   document.addEventListener(ev, tryAutoPlay, { once: true })
 );
-
 function tryAutoPlay() {
   bgm.volume = 0.45;
-  bgm.play().then(() => {
-    musicPlaying = true;
-    musicBtn.classList.add('playing');
-  }).catch(() => {});
+  bgm.play().then(() => { musicPlaying = true; musicBtn.classList.add('playing'); }).catch(() => {});
 }
-
 function toggleMusic() {
   if (musicPlaying) {
-    bgm.pause();
-    musicPlaying = false;
-    musicBtn.classList.remove('playing');
+    bgm.pause(); musicPlaying = false; musicBtn.classList.remove('playing');
   } else {
-    bgm.play().then(() => {
-      musicPlaying = true;
-      musicBtn.classList.add('playing');
-    }).catch(() => showToast('음악 파일을 연결해 주세요 🎵'));
+    bgm.play().then(() => { musicPlaying = true; musicBtn.classList.add('playing'); })
+      .catch(() => showToast('음악 파일을 연결해 주세요 🎵'));
   }
 }
 
-/* ─── VIDEO ─── */
+/* ════════════════════════════
+   VIDEO
+   브라우저별 position 전략 분기:
+   - [data-browser="safari"] : CSS에서 fixed 적용 (iOS 재합성 차단)
+   - 그 외 Chrome/카카오     : absolute 유지 (fixed 시 콘텐츠 분리 방지)
+   resumeVideo도 Safari만 opacity 마스킹 처리
+════════════════════════════ */
 const heroVideo = document.getElementById('hero-video');
 const heroFback = document.getElementById('hero-fallback');
+const isSafari  = document.documentElement.getAttribute('data-browser') === 'safari';
 
-function showFallback() {
-  heroVideo.style.display = 'none';
-}
-
+function showFallback() { heroVideo.style.display = 'none'; }
 function onVideoReady() {
   heroVideo.classList.add('loaded');
   heroFback.classList.add('hide');
   heroVideo.play().catch(() => {});
 }
-
 heroVideo.addEventListener('error', showFallback);
 heroVideo.addEventListener('canplay', onVideoReady, { once: true });
 if (heroVideo.readyState >= 3) onVideoReady();
+setTimeout(() => { if (!heroVideo.classList.contains('loaded')) showFallback(); }, 2500);
 
-setTimeout(() => {
-  if (!heroVideo.classList.contains('loaded')) showFallback();
-}, 2500);
+/* Safari 전용: hero 벗어나면 visibility hidden으로 GPU 레이어 해제 */
+if (isSafari) {
+  new IntersectionObserver((entries) => {
+    entries.forEach(e => { heroVideo.style.visibility = e.isIntersecting ? 'visible' : 'hidden'; });
+  }, { threshold: 0 }).observe(document.querySelector('.hero'));
+}
 
-/*
- * ★ 최적화 2: fixed 포지션 + visibility 제어
- *   hero가 화면에서 벗어나면 visibility:hidden으로
- *   GPU 레이어를 해제하여 불필요한 합성 비용 절감
- */
-const heroVisObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    heroVideo.style.visibility = e.isIntersecting ? 'visible' : 'hidden';
-  });
-}, { threshold: 0 });
-heroVisObs.observe(document.querySelector('.hero'));
-
-/*
- * ★ 최적화 4: resumeVideo — setTimeout(32ms)으로 마스킹 타이밍 안정화
- *   기존 rAF × 2 방식은 iOS에서 paint 전 실행될 수 있어 프레임 노출 위험.
- *   32ms(약 2프레임)를 대기하면 실제 화면에 그려진 후 opacity 복구 보장.
- */
 let videoResumeTimer = null;
-
 function resumeVideo(masked) {
   if (!heroVideo.classList.contains('loaded')) return;
   if (!heroVideo.paused) return;
-
-  if (masked) {
-    heroVideo.style.transition = 'none';
-    heroVideo.style.opacity = '0';
-  }
-
+  /* Chrome/카카오는 opacity 마스킹 없이 바로 재생 */
+  if (!isSafari) { heroVideo.play().catch(() => {}); return; }
+  if (masked) { heroVideo.style.transition = 'none'; heroVideo.style.opacity = '0'; }
   heroVideo.play().then(() => {
     if (masked) {
       setTimeout(() => {
         heroVideo.style.transition = 'opacity 0.2s ease';
         heroVideo.style.opacity = '1';
-      }, 32); /* ← rAF 2중 호출 → setTimeout 32ms 로 교체 */
+      }, 32);
     }
   }).catch(() => {});
 }
@@ -880,63 +799,48 @@ function resumeVideo(masked) {
 heroVideo.addEventListener('pause', () => {
   if (document.getElementById('lightbox').classList.contains('open')) return;
   clearTimeout(videoResumeTimer);
-  videoResumeTimer = setTimeout(() => resumeVideo(true), 80);
+  videoResumeTimer = setTimeout(() => resumeVideo(isSafari), 80);
 });
-
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) {
-    clearTimeout(videoResumeTimer);
-    videoResumeTimer = setTimeout(() => resumeVideo(false), 100);
-  }
+  if (!document.hidden) { clearTimeout(videoResumeTimer); videoResumeTimer = setTimeout(() => resumeVideo(false), 100); }
 });
-
-/*
- * ★ 최적화 5: scrollend + scroll 폴백으로 pause 재개 누락 방지
- *   iOS는 스크롤 끝난 후 resume 이벤트가 늦게 오는 경우가 있어
- *   scrollend(지원 브라우저) + scroll 멈춤 감지(폴백)를 보조로 추가.
- */
-window.addEventListener('scrollend', () => {
-  resumeVideo(false);
-}, { passive: true });
-
+window.addEventListener('scrollend', () => { resumeVideo(false); }, { passive: true });
 let scrollStopTimer = null;
 window.addEventListener('scroll', () => {
   clearTimeout(scrollStopTimer);
   scrollStopTimer = setTimeout(() => resumeVideo(false), 150);
 }, { passive: true });
-
-const videoObs = new IntersectionObserver((entries) => {
+new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      clearTimeout(videoResumeTimer);
-      videoResumeTimer = setTimeout(() => resumeVideo(false), 50);
-    }
+    if (e.isIntersecting) { clearTimeout(videoResumeTimer); videoResumeTimer = setTimeout(() => resumeVideo(false), 50); }
   });
-}, { threshold: 0 });
-videoObs.observe(document.querySelector('.hero'));
+}, { threshold: 0 }).observe(document.querySelector('.hero'));
 
-/* ─── SCROLL REVEAL ─── */
+/* ════════════════════════════
+   SCROLL REVEAL
+════════════════════════════ */
 const revealObs = new IntersectionObserver(
   entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
   { threshold: 0.12 }
 );
 document.querySelectorAll('.section').forEach(s => revealObs.observe(s));
 
-/* ─── COUNTDOWN ─── */
+/* ════════════════════════════
+   COUNTDOWN
+════════════════════════════ */
 function updateCountdown() {
-  const target = new Date('2026-09-20T13:20:00');
-  const now = new Date();
-  const diff = target - now;
+  const diff = new Date('2026-09-20T13:20:00') - new Date();
   if (diff <= 0) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='00'); return; }
   document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
   document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
   document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
   document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
 }
-updateCountdown();
-setInterval(updateCountdown, 1000);
+updateCountdown(); setInterval(updateCountdown, 1000);
 
-/* ─── LIGHTBOX ─── */
+/* ════════════════════════════
+   LIGHTBOX
+════════════════════════════ */
 const PHOTO_DATA = [
   {bg:'linear-gradient(135deg,#d4a0a0,#c07070)',emoji:'💐'},
   {bg:'linear-gradient(135deg,#a0b4a0,#708070)',emoji:'🌹'},
@@ -959,191 +863,128 @@ const PHOTO_DATA = [
   {bg:'linear-gradient(135deg,#ccb0a0,#9c7060)',emoji:'🕯️'},
   {bg:'linear-gradient(135deg,#a8bcc8,#607888)',emoji:'💍'}
 ];
-
-let curPhoto = 0;
-let lbTouchX = 0;
-let transitioning = false;
-
-function openLightbox(idx) {
-  curPhoto = idx;
-  applyPhoto(null);
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
+let curPhoto=0, lbTouchX=0, transitioning=false;
+function openLightbox(idx) { curPhoto=idx; applyPhoto(null); document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; }
+function applyPhoto(dir) {
+  const el=document.getElementById('lb-display'), d=PHOTO_DATA[curPhoto];
+  el.style.background=d.bg; el.textContent=d.emoji;
+  if (dir) { const cls=dir===1?'slide-in-left':'slide-in-right'; el.classList.remove('slide-in-left','slide-in-right'); void el.offsetWidth; el.classList.add(cls); }
+  document.getElementById('lb-counter').textContent=`${curPhoto+1} / ${PHOTO_DATA.length}`;
 }
-
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function applyPhoto(direction) {
-  const el = document.getElementById('lb-display');
-  const d = PHOTO_DATA[curPhoto];
-
-  el.style.background = d.bg;
-  el.textContent = d.emoji;
-
-  if (direction) {
-    const cls = direction === 1 ? 'slide-in-left' : 'slide-in-right';
-    el.classList.remove('slide-in-left','slide-in-right');
-    void el.offsetWidth;
-    el.classList.add(cls);
-  }
-
-  document.getElementById('lb-counter').textContent = `${curPhoto + 1} / ${PHOTO_DATA.length}`;
-}
-
 function changePhoto(dir) {
-  if (transitioning) return;
-  transitioning = true;
-  const el = document.getElementById('lb-display');
-  const outCls = dir === 1 ? 'slide-out-left' : 'slide-out-right';
-
-  el.classList.add(outCls);
-  setTimeout(() => {
-    el.classList.remove(outCls);
-    curPhoto = (curPhoto + dir + PHOTO_DATA.length) % PHOTO_DATA.length;
-    applyPhoto(dir);
-    transitioning = false;
-  }, 160);
+  if (transitioning) return; transitioning=true;
+  const el=document.getElementById('lb-display');
+  el.classList.add(dir===1?'slide-out-left':'slide-out-right');
+  setTimeout(() => { el.classList.remove('slide-out-left','slide-out-right'); curPhoto=(curPhoto+dir+PHOTO_DATA.length)%PHOTO_DATA.length; applyPhoto(dir); transitioning=false; }, 160);
 }
-
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key==='ArrowRight') changePhoto(1);
-  if (e.key==='ArrowLeft')  changePhoto(-1);
-  if (e.key==='Escape')     closeLightbox();
+  if (e.key==='ArrowRight') changePhoto(1); if (e.key==='ArrowLeft') changePhoto(-1); if (e.key==='Escape') closeLightbox();
 });
+const lb=document.getElementById('lightbox');
+lb.addEventListener('touchstart', e => { lbTouchX=e.touches[0].clientX; }, {passive:true});
+lb.addEventListener('touchend', e => { const dx=e.changedTouches[0].clientX-lbTouchX; if(Math.abs(dx)>50) changePhoto(dx<0?1:-1); });
+lb.addEventListener('click', e => { if(e.target===lb) closeLightbox(); });
 
-const lb = document.getElementById('lightbox');
-lb.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, {passive:true});
-lb.addEventListener('touchend',   e => {
-  const dx = e.changedTouches[0].clientX - lbTouchX;
-  if (Math.abs(dx) > 50) changePhoto(dx < 0 ? 1 : -1);
-});
-lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
-
-/* ─── ACCOUNT TABS ─── */
+/* ════════════════════════════
+   ACCOUNT TABS
+════════════════════════════ */
 function switchTab(tab, el) {
   document.querySelectorAll('.account-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.account-content').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
+  el.classList.add('active'); document.getElementById('tab-'+tab).classList.add('active');
 }
 
-/* ─── COPY ─── */
+/* ════════════════════════════
+   COPY
+════════════════════════════ */
 function copyText(text) {
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast('복사되었습니다 ✓'));
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('복사되었습니다 ✓');
-  }
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => showToast('복사되었습니다 ✓')); }
+  else { const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('복사되었습니다 ✓'); }
 }
 
-/* ─── COMMENTS (localStorage) ─── */
-const STORAGE_KEY = 'wedding_ms_2025_comments';
+/* ════════════════════════════
+   COMMENTS
+   ★ 댓글 캐시 문제 해결:
+   카카오톡 인앱브라우저는 localStorage를 앱 단위로 공유.
+   → 스토리지 키에 고유 식별자를 포함해 다른 청첩장과 완전히 격리.
+   → localStorage 차단 환경(일부 WebView)은 메모리 폴백으로 처리.
+════════════════════════════ */
+
+/*
+  ✏️ STORAGE_KEY의 날짜(20260920)를 실제 결혼 날짜로 유지하면
+     같은 기기에서 다른 페이지를 열어도 댓글이 섞이지 않습니다.
+*/
+const STORAGE_KEY = 'wedding_ygs_20260920_v1';
 let comments = [];
 
+const safeStorage = {
+  get(key)      { try { return localStorage.getItem(key); }    catch(e) { return null; } },
+  set(key, val) { try { localStorage.setItem(key, val); return true; } catch(e) { return false; } }
+};
+
 function loadComments() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) comments = JSON.parse(raw);
-  } catch(e) { comments = []; }
+  try { const raw = safeStorage.get(STORAGE_KEY); if (raw) comments = JSON.parse(raw); }
+  catch(e) { comments = []; }
   renderComments();
 }
-
-function saveComments() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); } catch(e) {}
-}
-
+function saveComments() { safeStorage.set(STORAGE_KEY, JSON.stringify(comments)); }
 function escHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/\n/g,'<br>');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
 }
-
 function renderComments() {
-  const list = document.getElementById('comments-list');
-  const empty = document.getElementById('comment-empty');
+  const list=document.getElementById('comments-list'), empty=document.getElementById('comment-empty');
   list.querySelectorAll('.comment-item').forEach(i => i.remove());
-
   if (!comments.length) { empty.style.display='block'; return; }
-  empty.style.display = 'none';
-
+  empty.style.display='none';
   [...comments].reverse().forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'comment-item';
-    div.innerHTML = `
-      <div class="comment-header">
-        <span class="comment-author">${escHtml(c.name)}</span>
-        <span class="comment-date">${c.date}</span>
-      </div>
-      <div class="comment-body">${escHtml(c.body)}</div>`;
+    const div=document.createElement('div'); div.className='comment-item';
+    div.innerHTML=`<div class="comment-header"><span class="comment-author">${escHtml(c.name)}</span><span class="comment-date">${c.date}</span></div><div class="comment-body">${escHtml(c.body)}</div>`;
     list.appendChild(div);
   });
 }
-
 function submitComment() {
-  const name = document.getElementById('comment-name').value.trim();
-  const body = document.getElementById('comment-body').value.trim();
+  const name=document.getElementById('comment-name').value.trim();
+  const body=document.getElementById('comment-body').value.trim();
   if (!name) { showToast('이름을 입력해 주세요'); return; }
-  if (!body || body.length < 2) { showToast('메시지를 입력해 주세요'); return; }
-
-  const now = new Date();
-  comments.push({
-    name, body,
-    date: `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`
-  });
-  saveComments();
-  renderComments();
-  document.getElementById('comment-name').value = '';
-  document.getElementById('comment-body').value = '';
+  if (!body||body.length<2) { showToast('메시지를 입력해 주세요'); return; }
+  const now=new Date();
+  comments.push({ name, body, date:`${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}` });
+  saveComments(); renderComments();
+  document.getElementById('comment-name').value=''; document.getElementById('comment-body').value='';
   showToast('메시지가 등록되었습니다 🌸');
 }
-
 loadComments();
 
-/* ─── TOAST ─── */
+/* ════════════════════════════
+   TOAST
+════════════════════════════ */
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-/* ─── SHARE ─── */
+/* ════════════════════════════
+   SHARE
+════════════════════════════ */
 function shareInvite() {
   if (navigator.share) {
-    navigator.share({
-      title: '어연걸 ♥ 김소정 결혼합니다',
-      text: '2026년 9월 20일 일요일 오후 1시\nKU컨벤션웨딩홀',
-      url: window.location.href
-    });
-  } else {
-    copyText(window.location.href);
-    showToast('링크가 복사되었습니다 ✓');
-  }
+    navigator.share({ title:'어연걸 ♥ 김소정 결혼합니다', text:'2026년 9월 20일 일요일 오후 1시\nKU컨벤션웨딩홀', url:window.location.href });
+  } else { copyText(window.location.href); showToast('링크가 복사되었습니다 ✓'); }
 }
 
-/* ─── VH 재계산 (큰 변화만 반영) ─── */
+/* ════════════════════════════
+   VH 재계산 (큰 변화만 반영)
+════════════════════════════ */
 let lastHeight = window.innerHeight;
-
 function setScreenSize() {
   if (Math.abs(lastHeight - window.innerHeight) > 50) {
     document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
     lastHeight = window.innerHeight;
   }
 }
-
 window.addEventListener('resize', setScreenSize, { passive: true });
 </script>
 </body>
