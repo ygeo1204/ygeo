@@ -6,35 +6,35 @@
 <title>어연걸 ♥ 김소정 - 결혼합니다</title>
 
 <script>
-  /**
-   * 최적화: iOS 카카오톡 인앱 브라우저 대응
-   * 뷰포트 높이 변화로 인한 영상 튐 현상을 막기 위해 초기 높이를 고정합니다.
-   */
+  // [개선] 스크롤 시 하단 바 변화에 따른 튐 방지를 위해 초기 높이만 고정
   function setVh() {
     let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+    document.documentElement.style.setProperty('--vh', vh + 'px');
   }
   setVh();
-  // 가로/세로 전환 시에만 다시 계산 (스크롤 시에는 무시)
   window.addEventListener('orientationchange', setVh);
 
   var ua = navigator.userAgent;
-  var isSafari = /Safari/.test(ua) && !/Chrome/.test(ua) && !/KAKAOTALK/.test(ua);
-  document.documentElement.setAttribute('data-browser', isSafari ? 'safari' : 'other');
+  var isSafariBrowser = /Safari/.test(ua) && !/Chrome/.test(ua) && !/KAKAOTALK/.test(ua);
+  document.documentElement.setAttribute('data-browser', isSafariBrowser ? 'safari' : 'other');
 </script>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
-
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
   --vh: 1vh;
   --ivory: #faf6f0;
+  --blush: #e8c4b8;
   --rose: #c97d6e;
-  --gold: #c9a96e;
+  --sage: #8a9e8a;
   --deep: #3d3530;
+  --gold: #c9a96e;
+  --petal: #f2ddd7;
 }
+
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--ivory);
@@ -43,82 +43,122 @@ body {
   overflow-x: hidden;
   max-width: 480px;
   margin: 0 auto;
-  /* iOS 카카오톡 스크롤 바운스 시 영상 이질감 완화 */
+  position: relative;
+  /* iOS 카카오톡 부드러운 스크롤 */
   -webkit-overflow-scrolling: touch;
 }
 
-/* ═══ HERO (첫 화면) ═══ */
+/* ═══ MUSIC BUTTON ═══ */
+#music-btn {
+  position: fixed;
+  top: 16px; right: 16px;
+  z-index: 900;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.music-bars { display: flex; align-items: flex-end; gap: 2px; height: 16px; }
+.music-bars span { width: 3px; background: var(--rose); border-radius: 2px; }
+
+/* ═══ HERO ═══ */
 .hero {
-  /* --vh를 사용하여 브라우저 하단바 변화에도 높이를 일정하게 유지 */
+  /* vh 변화에 따른 꿀렁임 방지 */
   height: calc(var(--vh, 1vh) * 100);
-  width: 100%;
-  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; 
   overflow: hidden;
-  background-color: #000;
 }
 
+/* [개선] 카카오톡 인앱브라우저 이질감 해결의 핵심: absolute 사용 */
 .hero-video {
-  /* ★ 핵심 수정: fixed 대신 absolute 사용
-     스크롤 시 영상이 뷰포트에 박혀있는 게 아니라, 
-     페이지 콘텐츠와 함께 위로 올라가게 하여 이질감을 제거합니다.
-  */
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0; left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: translate(-50%, -50%);
   z-index: 0;
-  /* 하드웨어 가속 강제 (깜빡임 방지) */
-  -webkit-transform: translate(-50%, -50%) translateZ(0);
+  /* 하드웨어 가속 */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
   will-change: transform;
 }
 
-/* Safari/카카오톡 전용 오버라이드 제거 
-   (기존 data-browser="safari" 관련 fixed 코드는 삭제하거나 아래처럼 absolute로 통일) */
-[data-browser="safari"] .hero-video {
-  position: absolute;
-  height: 100.5%; /* 미세한 틈 방지 */
-}
-
 .hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, 
-    rgba(0,0,0,0.2) 0%, 
-    transparent 50%, 
-    rgba(0,0,0,0.5) 100%);
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(61,53,48,.3) 0%, transparent 50%, rgba(61,53,48,.5) 100%);
   z-index: 1;
 }
 
 .hero-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  color: #fff;
-  padding-top: 40px;
+  position: relative; z-index: 3;
+  text-align: center; padding: 40px 30px;
+  animation: heroReveal 1.8s cubic-bezier(.16,1,.3,1) both;
 }
+@keyframes heroReveal { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
 
-/* ═══ 이후 섹션 ═══ */
+.hero-label { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,.85); margin-bottom:28px; }
+.hero-monogram { font-family:'Great Vibes',cursive; font-size:96px; color:#fff; line-height:1; margin-bottom:8px; text-shadow:0 4px 20px rgba(0,0,0,0.3); }
+.hero-names { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:300; color:white; margin-bottom:24px; }
+
+.scroll-hint {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px; z-index:3;
+}
+.scroll-line { width:1px; height:40px; background:linear-gradient(to bottom,rgba(255,255,255,.6),transparent); }
+
+/* ═══ SECTION BASE ═══ */
 .section {
   padding: 80px 32px;
-  background: #fff;
   position: relative;
-  z-index: 10; /* 영상 위로 덮으며 올라오도록 설정 */
+  background: white;
+  z-index: 5; /* 영상 위로 올라오도록 설정 */
 }
+.section-label { font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--rose); text-align:center; margin-bottom:16px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:400; text-align:center; margin-bottom:32px; font-style:italic; }
 
-/* 애니메이션 및 기타 스타일은 기존과 동일하게 유지... */
-.hero-monogram {
-  font-family:'Great Vibes',cursive; 
-  font-size:80px; 
-  text-shadow: 0 0 20px rgba(0,0,0,0.3);
+/* ═══ GREETING ═══ */
+.greeting-text { font-size:14px; line-height:2.2; color:#6d5f58; text-align:center; word-break:keep-all; }
+
+/* ═══ CONTACT ═══ */
+.contact-section { background: var(--ivory); }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.contact-card { background:white; border-radius:16px; padding:20px; text-align:center; border:1px solid rgba(232,196,184,.3); }
+.contact-btn {
+  display:inline-block; padding:8px 12px; border-radius:20px; font-size:11px;
+  text-decoration:none; margin-top:10px;
 }
+.contact-btn.call { background:var(--rose); color:white; }
 
-/* ... 중략 ... */
+/* ═══ DATE ═══ */
+.date-section { text-align:center; }
+.date-card { background:white; border-radius:20px; padding:36px 24px; box-shadow:0 8px 40px rgba(0,0,0,0.05); }
+.date-big { font-family:'Cormorant Garamond',serif; font-size:64px; color:var(--rose); }
+
+/* ═══ GALLERY ═══ */
+.gallery-section { background:var(--deep); color:white; }
+.gallery-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+.gallery-thumb { aspect-ratio:1; background:#444; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+
+/* ═══ ACCOUNT ═══ */
+.account-card { background:var(--petal); border-radius:16px; padding:20px; margin-bottom:12px; }
+.copy-btn { padding:6px 12px; border-radius:20px; background:var(--rose); color:white; border:none; font-size:11px; cursor:pointer; }
 </style>
 </head>
 <body>
+
+<audio id="bgm" loop preload="none">
+  <source src="YOUR_MUSIC.mp3" type="audio/mpeg">
+</audio>
+
+<button id="music-btn" onclick="toggleMusic()">
+  <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+</button>
 
 <section class="hero">
   <video class="hero-video" id="hero-video"
@@ -128,37 +168,89 @@ body {
     poster="https://raw.githubusercontent.com/ygeo1204/ygeo/main/KakaoTalk_20260308_195422244.jpg">
     <source src="https://github.com/ygeo1204/ygeo/raw/refs/heads/main/%EB%AA%A8%EC%85%98%ED%8F%AC%ED%86%A0_%EC%84%B8%EB%A1%9C%ED%98%95.mp4" type="video/mp4">
   </video>
-  
   <div class="hero-overlay"></div>
-  
   <div class="hero-content">
-    <p style="letter-spacing: 3px; font-size: 12px; margin-bottom: 20px;">WEDDING INVITATION</p>
-    <div class="hero-monogram">Y & S</div>
-    <div class="hero-names" style="font-size: 24px; margin-top: 10px;">어연걸 & 김소정</div>
-    <div style="margin-top: 30px; font-size: 14px; opacity: 0.9;">2026. 09. 20. SUN PM 1:20</div>
+    <p class="hero-label">We're getting married</p>
+    <div class="hero-monogram">Y &amp; S</div>
+    <div class="hero-names">어연걸 &nbsp;♥&nbsp; 김소정</div>
+    <div class="hero-date">2026년 9월 20일 일요일 오후 1시 20분</div>
   </div>
-
-  <div class="scroll-hint" style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3;">
-    <div style="width: 1px; height: 50px; background: rgba(255,255,255,0.5); margin: 0 auto;"></div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
   </div>
 </section>
 
 <section class="section">
-  <div style="text-align: center;">
-    <h2 style="font-size: 20px; color: var(--rose); margin-bottom: 20px;">서로의 꽃이 되어</h2>
-    <p style="line-height: 2; font-size: 15px;">
-      곁에 있을 때 가장 나다워지는 사람을 만났습니다.<br>
-      함께 걷는 이 길이 때로는 비바람 불지라도<br>
-      서로가 지붕이 되어주며 행복하게 살겠습니다.
-    </p>
+  <p class="section-label">Invitation</p>
+  <h2 class="section-title">결혼합니다</h2>
+  <p class="greeting-text">
+    서로를 바라보며 설레었던 순간들이<br>
+    쌓이고 쌓여 평생을 함께하기로 했습니다.<br><br>
+    두 사람이 사랑으로 만들어 나갈<br>
+    새로운 가정을 위해 축복해 주세요.
+  </p>
+</section>
+
+<section class="section contact-section">
+  <div class="contact-grid">
+    <div class="contact-card">
+      <div style="font-size:10px; color:var(--sage);">신랑</div>
+      <div style="font-size:18px; margin:5px 0;">어연걸</div>
+      <a href="tel:010-4023-6189" class="contact-btn call">전화하기</a>
+    </div>
+    <div class="contact-card">
+      <div style="font-size:10px; color:var(--sage);">신부</div>
+      <div style="font-size:18px; margin:5px 0;">김소정</div>
+      <a href="tel:010-9895-4717" class="contact-btn call">전화하기</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="date-card">
+    <div class="date-big">20</div>
+    <div style="letter-spacing:2px;">2026. 09. SUN</div>
+    <p style="margin-top:20px; font-size:14px; color:var(--sage);">오후 1시 20분</p>
+  </div>
+</section>
+
+<section class="section">
+  <p class="section-label">Gift</p>
+  <h2 class="section-title">마음 전하실 곳</h2>
+  <div class="account-card">
+    <div style="font-size:12px; color:var(--rose);">신랑측 계좌</div>
+    <div style="font-size:16px; margin:10px 0;">국민은행 123-456-789</div>
+    <button class="copy-btn" onclick="copyAccount('123-456-789')">복사하기</button>
   </div>
 </section>
 
 <script>
-  // 영상이 로드되면 페이드인 효과를 주어 이질감을 줄일 수 있습니다.
-  const video = document.getElementById('hero-video');
-  video.addEventListener('loadeddata', function() {
-    video.style.opacity = "1";
+  // 음악 토글 함수
+  function toggleMusic() {
+    const bgm = document.getElementById('bgm');
+    const btn = document.getElementById('music-btn');
+    if (bgm.paused) {
+      bgm.play();
+      btn.classList.add('playing');
+    } else {
+      bgm.pause();
+      btn.classList.remove('playing');
+    }
+  }
+
+  // 계좌 복사 함수
+  function copyAccount(acc) {
+    navigator.clipboard.writeText(acc).then(() => {
+      alert('계좌번호가 복사되었습니다.');
+    });
+  }
+
+  // 영상 자동재생 보장 (일부 브라우저 대응)
+  window.addEventListener('load', () => {
+    const video = document.getElementById('hero-video');
+    video.play().catch(() => {
+      console.log("자동 재생이 차단되었습니다. 사용자 상호작용이 필요합니다.");
+    });
   });
 </script>
 
