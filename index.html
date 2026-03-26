@@ -37,10 +37,11 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  /* ✅ html에도 overscroll 차단 추가 */
+  /* ✅ scroll-behavior smooth 제거 — WebView 버벅임 주요 원인 */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  /* ✅ 데스크탑 양 옆 배경색 */
+  background: #ddd8d0;
 }
 
 body {
@@ -51,21 +52,24 @@ body {
   max-width: 480px;
   margin: 0 auto;
   position: relative;
-  /* ✅ GPU 레이어 강제 생성으로 리페인트 최소화 */
-  transform: translateZ(0);
   overscroll-behavior: none;
+  /* ✅ pan-y: 세로 스크롤만 허용, 가로 제스처 차단 */
+  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
   line-height: 1.6;
+  /* ✅ 카드처럼 분리감 */
+  box-shadow: 0 0 40px rgba(0,0,0,0.12);
 }
 
 /* ═══ MUSIC BUTTON ═══ */
 #music-btn {
   position: fixed; top: 16px; right: 16px; z-index: 900;
   width: 42px; height: 42px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.4);
-  background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.5);
+  /* ✅ backdrop-filter 제거 — WebView에서 매우 비싼 연산 */
+  background: rgba(80,70,60,0.55);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 .music-bars { display: flex; align-items: flex-end; gap: 2.5px; height: 14px; }
 .music-bars span { width: 2px; background: #ffffff; border-radius: 2px; }
@@ -78,9 +82,9 @@ body {
 
 /* ═══ SCROLL ANIMATION BASE ═══ */
 .fade-up {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  /* ✅ will-change 제거 — 요소마다 GPU 레이어 생성되면 오히려 버벅임 악화 */
 }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.15s; }
@@ -88,19 +92,21 @@ body {
 
 /* ═══ 1. HERO ═══ */
 .hero {
-  /* ✅ --vh 폴백 유지 + dvh 우선 적용 (주소창 포함/제외 자동 처리) */
   height: calc(var(--vh, 1vh) * 100);
   height: 100dvh;
-  width: 100vw;
-  position: relative; left: 50%; transform: translateX(-50%);
+  /* ✅ 100vw + translateX 트릭 제거 — 컴포지팅 레이어 충돌 원인
+     body max-width 안에서 width: 100%로 단순화 */
+  width: 100%;
+  position: relative;
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   overflow: hidden; padding-bottom: 50px;
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
-  background: url('https://github.com/ygeo1204/ygeo/blob/5d62ba3370517e0d681bce60f5bb6d58378fb580/KakaoTalk_20260308_195422244.webp?raw=true') center/cover no-repeat;
-  /* ✅ 배경 이미지 리페인트 방지 */
-  will-change: transform;
+  background: url('https://github.com/ygeo1204/ygeo/blob/5d62ba3370517e0d681bce60f5bb6d58378fb580/KakaoTalk_20260308_195422244.webp?raw=true') center top/cover no-repeat;
+  /* ✅ translate3d로 GPU 레이어 명시 (translateZ보다 호환성 좋음) */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
 }
 
 /* 인트로 오버레이 */
@@ -138,7 +144,11 @@ body {
 @keyframes fadeIn { to { opacity: 1; } }
 
 /* ═══ SECTION BASE ═══ */
-.section { padding: 90px 24px; position: relative; background: var(--bg-main); text-align: center; }
+.section {
+  padding: 90px 24px; position: relative; background: var(--bg-main); text-align: center;
+  /* ✅ contain: 각 섹션의 레이아웃 재계산 범위를 제한 */
+  contain: layout style;
+}
 .section-label { font-family: 'Cormorant Garamond', serif; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
 .section-title { font-size: 20px; font-weight: 400; color: var(--text-main); margin-bottom: 48px; letter-spacing: 1px; }
 
