@@ -6,8 +6,8 @@
 <title>어연걸 ♥ 김소정 - 결혼합니다</title>
 
 <script>
-  // ✅ --vh 페이지 로드 시점에 딱 1번만 고정
-  // resize 리스너 없음 — 스크롤 중 주소창 등장/소멸로 인한 재계산·들썩임 원천 차단
+  // --vh: 로드 시점 1회만 고정 — resize 리스너 없음
+  // 스크롤 중 주소창 등장/소멸로 인한 재계산·들썩임 원천 차단
   document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
 </script>
 
@@ -29,10 +29,8 @@
 }
 
 html {
-  /* ✅ scroll-behavior smooth 제거 — WebView 버벅임 주요 원인 */
   overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-  /* ✅ 데스크탑 양 옆 배경색 */
+  /* 데스크탑 양 옆 배경색 */
   background: #ddd8d0;
 }
 
@@ -45,12 +43,10 @@ body {
   margin: 0 auto;
   position: relative;
   overscroll-behavior: none;
-  /* ✅ pan-y: 세로 스크롤만 허용, 가로 제스처 차단 */
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
   line-height: 1.6;
-  /* ✅ 카드처럼 분리감 */
   box-shadow: 0 0 40px rgba(0,0,0,0.12);
+  /* touch-action / -webkit-overflow-scrolling 제거
+     — WebKit에서 스크롤 레이어 충돌 유발 */
 }
 
 /* ═══ MUSIC BUTTON ═══ */
@@ -58,7 +54,6 @@ body {
   position: fixed; top: 16px; right: 16px; z-index: 900;
   width: 42px; height: 42px; border-radius: 50%;
   border: 1px solid rgba(255,255,255,0.5);
-  /* ✅ backdrop-filter 제거 — WebView에서 매우 비싼 연산 */
   background: rgba(80,70,60,0.55);
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
@@ -75,8 +70,8 @@ body {
 /* ═══ SCROLL ANIMATION BASE ═══ */
 .fade-up {
   opacity: 0; transform: translateY(24px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-  /* ✅ will-change 제거 — 요소마다 GPU 레이어 생성되면 오히려 버벅임 악화 */
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.15s; }
@@ -84,19 +79,17 @@ body {
 
 /* ═══ 1. HERO ═══ */
 .hero {
-  /* ✅ 로드 시점에 고정된 --vh만 사용 — dvh 제거
-     dvh는 주소창 show/hide에 따라 실시간 변동하므로 오히려 들썩임 유발 */
+  /* --vh 1회 고정값만 사용 (dvh 제거 — 주소창 변동 시 실시간 반응해 들썩임 유발) */
   height: calc(var(--vh, 1vh) * 100);
   width: 100%;
-  /* ✅ position: relative — 뒤에 오는 섹션들이 z-index: 1로 자연스럽게 덮고 올라옴 */
   position: relative;
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   overflow: hidden; padding-bottom: 50px;
 }
 .hero-bg {
-  /* ✅ absolute: fixed 대신 absolute 사용
-     fixed는 스크롤마다 뷰포트 기준 재계산 → 아이폰에서 멈칫·크기변동 발생
-     absolute는 페이지 상단에 완전 고정, 이후 섹션이 그 위로 덮이며 올라감 */
+  /* fixed 대신 absolute 사용
+     fixed는 스크롤마다 뷰포트 기준 재계산 → 아이폰 멈칫/크기변동
+     absolute는 페이지 상단 고정, 이후 섹션이 그 위로 자연스럽게 덮이며 올라옴 */
   position: absolute; inset: 0; z-index: 0;
   background: url('https://github.com/ygeo1204/ygeo/blob/5d62ba3370517e0d681bce60f5bb6d58378fb580/KakaoTalk_20260308_195422244.webp?raw=true') center top/cover no-repeat;
   -webkit-transform: translate3d(0,0,0);
@@ -118,9 +111,9 @@ body {
 .intro-text p { font-size: 14px; letter-spacing: 2px; font-weight: 300; }
 
 @keyframes textFadeInOut {
-  0% { opacity: 0; transform: translateY(15px); }
-  20% { opacity: 1; transform: translateY(0); }
-  80% { opacity: 1; transform: translateY(0); }
+  0%   { opacity: 0; transform: translateY(15px); }
+  20%  { opacity: 1; transform: translateY(0); }
+  80%  { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-15px); }
 }
 @keyframes overlayFadeOut {
@@ -137,13 +130,26 @@ body {
 @keyframes scrollPulse { 0%,100%{transform:scaleY(1);opacity:.5} 50%{transform:scaleY(1.2);opacity:1} }
 @keyframes fadeIn { to { opacity: 1; } }
 
-/* ═══ SECTION BASE ═══ */
-.section {
-  padding: 90px 24px; position: relative; background: var(--bg-main); text-align: center;
-  /* ✅ z-index: 1 — 스크롤 시 hero 위로 자연스럽게 덮이며 올라옴 */
+/* ═══ CONTENT WRAP ═══
+   핵심 수정: 히어로 이후 모든 콘텐츠를 단 하나의 래퍼로 묶음.
+   z-index 스태킹 컨텍스트를 이 1개로만 유지.
+
+   이전 코드의 문제:
+   - .section마다 z-index: 1 → 섹션 수만큼 GPU 레이어 생성
+   - 스크롤할 때마다 모든 레이어를 개별 합성 → 반복 버벅임 직접 원인
+
+   이 래퍼 하나만 position + z-index를 가지면
+   브라우저가 hero(0) ↔ content-wrap(1) 딱 2개 레이어만 관리.
+   섹션 개수에 무관하게 스크롤 성능 일정하게 유지됨. */
+.content-wrap {
+  position: relative;
   z-index: 1;
-  contain: layout style;
+  background: var(--bg-main);
 }
+
+/* ═══ SECTION BASE ═══ */
+/* z-index, contain 모두 제거 — content-wrap이 대신 처리 */
+.section { padding: 90px 24px; position: relative; background: var(--bg-main); text-align: center; }
 .section-label { font-family: 'Cormorant Garamond', serif; font-size: 14px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
 .section-title { font-size: 20px; font-weight: 400; color: var(--text-main); margin-bottom: 48px; letter-spacing: 1px; }
 
@@ -151,7 +157,7 @@ body {
 .greeting-text { font-size: 15px; line-height: 2.4; color: var(--text-main); font-weight: 300; }
 
 /* ═══ 3. MID-BG ═══ */
-.mid-bg-wrap { padding: 0 24px 60px 24px; background: var(--bg-main); position: relative; z-index: 1; }
+.mid-bg-wrap { padding: 0 24px 60px 24px; background: var(--bg-main); }
 .mid-bg {
   width: 100%; height: 55vh;
   border-radius: 16px;
@@ -257,7 +263,7 @@ body {
 <!-- 1. HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
-  
+
   <div class="intro-overlay">
     <div class="intro-text">
       <h1>Y &amp; S</h1>
@@ -271,209 +277,217 @@ body {
   </div>
 </section>
 
-<!-- 2. GREETING -->
-<section class="section">
-  <div class="fade-up">
-    <p class="section-label">Invitation</p>
-    <h2 class="section-title">소중한 분들을 초대합니다</h2>
-    <p class="greeting-text">
-      서로를 바라보며 설레었던 순간들이<br>
-      쌓이고 쌓여 평생을 함께하기로 했습니다.<br><br>
-      두 사람이 사랑으로 만들어 나갈<br>
-      새로운 가정을 위해<br>
-      바쁘신 중에도 오셔서 축복해 주시면<br>
-      더없는 기쁨으로 간직하겠습니다.
-    </p>
+<!-- ▼ content-wrap 시작
+     히어로 이후 모든 섹션을 하나로 묶어 GPU 레이어를 1개로 유지.
+     섹션마다 z-index를 붙이면 레이어가 섹션 수만큼 생겨
+     스크롤할 때마다 전부 재합성 → 위아래 반복 이동 시 버벅임 원인. -->
+<div class="content-wrap">
+
+  <!-- 2. GREETING -->
+  <section class="section">
+    <div class="fade-up">
+      <p class="section-label">Invitation</p>
+      <h2 class="section-title">소중한 분들을 초대합니다</h2>
+      <p class="greeting-text">
+        서로를 바라보며 설레었던 순간들이<br>
+        쌓이고 쌓여 평생을 함께하기로 했습니다.<br><br>
+        두 사람이 사랑으로 만들어 나갈<br>
+        새로운 가정을 위해<br>
+        바쁘신 중에도 오셔서 축복해 주시면<br>
+        더없는 기쁨으로 간직하겠습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. BACKGROUND PHOTO 1 -->
+  <div class="mid-bg-wrap">
+    <div class="mid-bg bg-1 fade-up"></div>
   </div>
-</section>
 
-<!-- 3. BACKGROUND PHOTO 1 -->
-<div class="mid-bg-wrap">
-  <div class="mid-bg bg-1 fade-up"></div>
-</div>
+  <!-- 4. CALENDAR & COUNTDOWN -->
+  <section class="section calendar-section">
+    <div class="fade-up">
+      <div class="date-title">2026. 09. 20</div>
+      <div class="date-subtitle">일요일 오후 1시 20분</div>
 
-<!-- 4. CALENDAR & COUNTDOWN -->
-<section class="section calendar-section">
-  <div class="fade-up">
-    <div class="date-title">2026. 09. 20</div>
-    <div class="date-subtitle">일요일 오후 1시 20분</div>
-    
-    <div class="cal-wrap">
-      <div class="cal-grid">
-        <div class="cal-day" style="color:#d97b7b">S</div><div class="cal-day">M</div><div class="cal-day">T</div><div class="cal-day">W</div><div class="cal-day">T</div><div class="cal-day">F</div><div class="cal-day">S</div>
-        <div></div><div></div><div class="cal-date">1</div><div class="cal-date">2</div><div class="cal-date">3</div><div class="cal-date">4</div><div class="cal-date">5</div>
-        <div class="cal-date sun">6</div><div class="cal-date">7</div><div class="cal-date">8</div><div class="cal-date">9</div><div class="cal-date">10</div><div class="cal-date">11</div><div class="cal-date">12</div>
-        <div class="cal-date sun">13</div><div class="cal-date">14</div><div class="cal-date">15</div><div class="cal-date">16</div><div class="cal-date">17</div><div class="cal-date">18</div><div class="cal-date">19</div>
-        <div class="cal-date highlight">20</div><div class="cal-date">21</div><div class="cal-date">22</div><div class="cal-date">23</div><div class="cal-date">24</div><div class="cal-date">25</div><div class="cal-date">26</div>
-        <div class="cal-date sun">27</div><div class="cal-date">28</div><div class="cal-date">29</div><div class="cal-date">30</div><div></div><div></div><div></div>
+      <div class="cal-wrap">
+        <div class="cal-grid">
+          <div class="cal-day" style="color:#d97b7b">S</div><div class="cal-day">M</div><div class="cal-day">T</div><div class="cal-day">W</div><div class="cal-day">T</div><div class="cal-day">F</div><div class="cal-day">S</div>
+          <div></div><div></div><div class="cal-date">1</div><div class="cal-date">2</div><div class="cal-date">3</div><div class="cal-date">4</div><div class="cal-date">5</div>
+          <div class="cal-date sun">6</div><div class="cal-date">7</div><div class="cal-date">8</div><div class="cal-date">9</div><div class="cal-date">10</div><div class="cal-date">11</div><div class="cal-date">12</div>
+          <div class="cal-date sun">13</div><div class="cal-date">14</div><div class="cal-date">15</div><div class="cal-date">16</div><div class="cal-date">17</div><div class="cal-date">18</div><div class="cal-date">19</div>
+          <div class="cal-date highlight">20</div><div class="cal-date">21</div><div class="cal-date">22</div><div class="cal-date">23</div><div class="cal-date">24</div><div class="cal-date">25</div><div class="cal-date">26</div>
+          <div class="cal-date sun">27</div><div class="cal-date">28</div><div class="cal-date">29</div><div class="cal-date">30</div><div></div><div></div><div></div>
+        </div>
+      </div>
+
+      <div class="countdown fade-up delay-1">
+        <div class="countdown-item"><span class="num" id="cd-d">--</span><span class="unit">DAYS</span></div>
+        <div class="countdown-item"><span class="num" id="cd-h">--</span><span class="unit">HOURS</span></div>
+        <div class="countdown-item"><span class="num" id="cd-m">--</span><span class="unit">MINS</span></div>
+        <div class="countdown-item"><span class="num" id="cd-s">--</span><span class="unit">SECS</span></div>
       </div>
     </div>
+  </section>
 
-    <div class="countdown fade-up delay-1">
-      <div class="countdown-item"><span class="num" id="cd-d">--</span><span class="unit">DAYS</span></div>
-      <div class="countdown-item"><span class="num" id="cd-h">--</span><span class="unit">HOURS</span></div>
-      <div class="countdown-item"><span class="num" id="cd-m">--</span><span class="unit">MINS</span></div>
-      <div class="countdown-item"><span class="num" id="cd-s">--</span><span class="unit">SECS</span></div>
+  <!-- 5. NAMES -->
+  <section class="section names-section">
+    <div class="fade-up">
+      <p class="section-label">Groom &amp; Bride</p>
+      <div class="name-box">
+        <span class="name-relation">아버지 성함 · 어머니 성함 의 장남</span>
+        <span class="name-main">어 연 걸</span>
+      </div>
+      <div class="name-box delay-1">
+        <span class="name-relation">아버지 성함 · 어머니 성함 의 장녀</span>
+        <span class="name-main">김 소 정</span>
+      </div>
     </div>
+  </section>
+
+  <!-- 6. GALLERY (SWIPE) -->
+  <section class="section gallery-section">
+    <div class="fade-up">
+      <p class="section-label">Gallery</p>
+      <h2 class="section-title">우리의 순간들</h2>
+    </div>
+
+    <div class="gallery-carousel fade-up delay-1">
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://github.com/ygeo1204/ygeo/blob/5d62ba3370517e0d681bce60f5bb6d58378fb580/KakaoTalk_20260308_195422244.webp?raw=true" alt="웨딩사진1"></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/eeeeee/aaaaaa?text=Photo+2" alt="웨딩사진2"></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/e2e2e2/999999?text=Photo+3" alt="웨딩사진3"></div>
+      <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/d5d5d5/888888?text=Photo+4" alt="웨딩사진4"></div>
+    </div>
+    <div class="swipe-hint fade-up delay-2"><span>←</span> 좌우로 넘겨보세요 <span>→</span></div>
+  </section>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" onclick="closeLightbox()">
+    <button class="lb-close">✕</button>
+    <img class="lb-img" id="lb-img" src="" alt="확대사진">
   </div>
-</section>
 
-<!-- 5. NAMES -->
-<section class="section names-section">
-  <div class="fade-up">
-    <p class="section-label">Groom &amp; Bride</p>
-    <div class="name-box">
-      <span class="name-relation">아버지 성함 · 어머니 성함 의 장남</span>
-      <span class="name-main">어 연 걸</span>
+  <!-- 7. LOCATION -->
+  <section class="section location-section">
+    <div class="fade-up">
+      <p class="section-label">Location</p>
+      <h2 class="section-title">오시는 길</h2>
+
+      <div class="map-frame">
+        <img src="https://via.placeholder.com/600x400/fafafa/cccccc?text=Map+Image" alt="약도">
+      </div>
+
+      <div class="navi-btns">
+        <a href="#" class="navi-btn">네이버 지도</a>
+        <a href="#" class="navi-btn">티맵 (TMAP)</a>
+        <a href="#" class="navi-btn">카카오내비</a>
+      </div>
+
+      <div class="transport-info">
+        <strong>지하철 안내</strong>
+        2호선 강남역 1번 출구 도보 5분<br>
+
+        <strong>버스 안내</strong>
+        간선버스 140, 144, 145, 400<br>
+
+        <strong>주차 안내</strong>
+        웨딩홀 지하 1~3층 주차장 이용 (2시간 무료)
+      </div>
     </div>
-    <div class="name-box delay-1">
-      <span class="name-relation">아버지 성함 · 어머니 성함 의 장녀</span>
-      <span class="name-main">김 소 정</span>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- 6. GALLERY (SWIPE) -->
-<section class="section gallery-section">
-  <div class="fade-up">
-    <p class="section-label">Gallery</p>
-    <h2 class="section-title">우리의 순간들</h2>
-  </div>
-  
-  <div class="gallery-carousel fade-up delay-1">
-    <div class="gallery-item" onclick="openLightbox(this)"><img src="https://github.com/ygeo1204/ygeo/blob/5d62ba3370517e0d681bce60f5bb6d58378fb580/KakaoTalk_20260308_195422244.webp?raw=true" alt="웨딩사진1"></div>
-    <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/eeeeee/aaaaaa?text=Photo+2" alt="웨딩사진2"></div>
-    <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/e2e2e2/999999?text=Photo+3" alt="웨딩사진3"></div>
-    <div class="gallery-item" onclick="openLightbox(this)"><img src="https://via.placeholder.com/600x800/d5d5d5/888888?text=Photo+4" alt="웨딩사진4"></div>
-  </div>
-  <div class="swipe-hint fade-up delay-2"><span>←</span> 좌우로 넘겨보세요 <span>→</span></div>
-</section>
+  <!-- 8. ACCOUNT (KAKAOPAY) -->
+  <section class="section account-section">
+    <div class="fade-up">
+      <p class="section-label">Heartfelt Thanks</p>
+      <h2 class="section-title">마음 전하실 곳</h2>
 
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox()">
-  <button class="lb-close">✕</button>
-  <img class="lb-img" id="lb-img" src="" alt="확대사진">
-</div>
-
-<!-- 7. LOCATION -->
-<section class="section location-section">
-  <div class="fade-up">
-    <p class="section-label">Location</p>
-    <h2 class="section-title">오시는 길</h2>
-    
-    <div class="map-frame">
-      <img src="https://via.placeholder.com/600x400/fafafa/cccccc?text=Map+Image" alt="약도">
-    </div>
-
-    <div class="navi-btns">
-      <a href="#" class="navi-btn">네이버 지도</a>
-      <a href="#" class="navi-btn">티맵 (TMAP)</a>
-      <a href="#" class="navi-btn">카카오내비</a>
-    </div>
-
-    <div class="transport-info">
-      <strong>지하철 안내</strong>
-      2호선 강남역 1번 출구 도보 5분<br>
-      
-      <strong>버스 안내</strong>
-      간선버스 140, 144, 145, 400<br>
-      
-      <strong>주차 안내</strong>
-      웨딩홀 지하 1~3층 주차장 이용 (2시간 무료)
-    </div>
-  </div>
-</section>
-
-<!-- 8. ACCOUNT (KAKAOPAY) -->
-<section class="section account-section">
-  <div class="fade-up">
-    <p class="section-label">Heartfelt Thanks</p>
-    <h2 class="section-title">마음 전하실 곳</h2>
-
-    <!-- 신랑측 -->
-    <div class="acc-wrap">
-      <div class="acc-header" onclick="toggleAcc(this)">신랑측 계좌번호 <span>▼</span></div>
-      <div class="acc-body">
-        <div class="acc-inner">
-          <div class="acc-person">
-            <div class="acc-role">신랑</div>
-            <div class="acc-detail"><strong>어연걸</strong> 국민은행 123-456-7890</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('1234567890')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+      <!-- 신랑측 -->
+      <div class="acc-wrap">
+        <div class="acc-header" onclick="toggleAcc(this)">신랑측 계좌번호 <span>▼</span></div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <div class="acc-person">
+              <div class="acc-role">신랑</div>
+              <div class="acc-detail"><strong>어연걸</strong> 국민은행 123-456-7890</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('1234567890')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
+            </div>
+            <div class="acc-person">
+              <div class="acc-role">아버지</div>
+              <div class="acc-detail"><strong>부친성함</strong> 은행명 000-000-000000</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
+            </div>
+            <div class="acc-person">
+              <div class="acc-role">어머니</div>
+              <div class="acc-detail"><strong>모친성함</strong> 은행명 000-000-000000</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
             </div>
           </div>
-          <div class="acc-person">
-            <div class="acc-role">아버지</div>
-            <div class="acc-detail"><strong>부친성함</strong> 은행명 000-000-000000</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+        </div>
+      </div>
+
+      <!-- 신부측 -->
+      <div class="acc-wrap fade-up delay-1">
+        <div class="acc-header" onclick="toggleAcc(this)">신부측 계좌번호 <span>▼</span></div>
+        <div class="acc-body">
+          <div class="acc-inner">
+            <div class="acc-person">
+              <div class="acc-role">신부</div>
+              <div class="acc-detail"><strong>김소정</strong> 신한은행 098-765-4321</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('0987654321')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
             </div>
-          </div>
-          <div class="acc-person">
-            <div class="acc-role">어머니</div>
-            <div class="acc-detail"><strong>모친성함</strong> 은행명 000-000-000000</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+            <div class="acc-person">
+              <div class="acc-role">아버지</div>
+              <div class="acc-detail"><strong>부친성함</strong> 은행명 000-000-000000</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
+            </div>
+            <div class="acc-person">
+              <div class="acc-role">어머니</div>
+              <div class="acc-detail"><strong>모친성함</strong> 은행명 000-000-000000</div>
+              <div class="btn-group">
+                <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
+                <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- 신부측 -->
-    <div class="acc-wrap fade-up delay-1">
-      <div class="acc-header" onclick="toggleAcc(this)">신부측 계좌번호 <span>▼</span></div>
-      <div class="acc-body">
-        <div class="acc-inner">
-          <div class="acc-person">
-            <div class="acc-role">신부</div>
-            <div class="acc-detail"><strong>김소정</strong> 신한은행 098-765-4321</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('0987654321')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
-            </div>
-          </div>
-          <div class="acc-person">
-            <div class="acc-role">아버지</div>
-            <div class="acc-detail"><strong>부친성함</strong> 은행명 000-000-000000</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
-            </div>
-          </div>
-          <div class="acc-person">
-            <div class="acc-role">어머니</div>
-            <div class="acc-detail"><strong>모친성함</strong> 은행명 000-000-000000</div>
-            <div class="btn-group">
-              <button class="acc-btn btn-copy" onclick="copyText('000000000000')">복사하기</button>
-              <a href="#" class="acc-btn btn-kakaopay">카카오페이</a>
-            </div>
-          </div>
-        </div>
+  <!-- 9. BACKGROUND PHOTO 2 -->
+  <div class="mid-bg-wrap">
+    <div class="mid-bg bg-2 fade-up"></div>
+  </div>
+
+  <!-- 10. CLOSING -->
+  <section class="section closing-section">
+    <div class="fade-up">
+      <div class="closing-text">저희 두 사람의 새로운 시작을<br>응원해 주셔서 감사합니다.</div>
+
+      <div class="share-btns">
+        <button class="share-btn" onclick="copyUrl()">🔗 링크 복사</button>
+        <button class="share-btn" onclick="shareKakao()">💬 카카오톡 공유</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- 9. BACKGROUND PHOTO 2 -->
-<div class="mid-bg-wrap">
-  <div class="mid-bg bg-2 fade-up"></div>
-</div>
-
-<!-- 10. CLOSING -->
-<section class="section closing-section text-center">
-  <div class="fade-up">
-    <div class="closing-text">저희 두 사람의 새로운 시작을<br>응원해 주셔서 감사합니다.</div>
-    
-    <div class="share-btns">
-      <button class="share-btn" onclick="copyUrl()">🔗 링크 복사</button>
-      <button class="share-btn" onclick="shareKakao()">💬 카카오톡 공유</button>
-    </div>
-  </div>
-</section>
+</div><!-- /content-wrap -->
 
 <script>
   // 1. 스크롤 애니메이션
@@ -484,7 +498,7 @@ body {
       }
     });
   }, { threshold: 0.1 });
-  
+
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
   // 2. 카운트다운
