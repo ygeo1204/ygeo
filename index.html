@@ -1,253 +1,461 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#faf9f6">
-    <meta name="format-detection" content="telephone=no">
-    
-    <title>청첩장 | 어연걸 ♥ 김소정</title>
-    <meta name="description" content="2026년 9월 20일 일요일 오후 1시 20분, KU컨벤션웨딩홀에서 결혼식에 초대합니다.">
-    
-    <meta property="og:title" content="청첩장 | 어연걸 ♥ 김소정">
-    <meta property="og:description" content="2026년 9월 20일 일요일 오후 1시 20분">
-    <meta property="og:type" content="website">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#F7F2EA">
+<meta name="format-detection" content="telephone=no">
+<title>청첩장 | 어연걸 ♥ 김소정</title>
+<meta name="description" content="2026년 9월 20일 일요일 오후 1시 20분, KU컨벤션웨딩홀에서 결혼식에 초대합니다.">
+<meta property="og:title" content="청첩장 | 어연걸 ♥ 김소정">
+<meta property="og:description" content="2026년 9월 20일 일요일 오후 1시 20분">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="opening" id="opening">
-        <div class="opening-content">
-            <div class="title-animate">
-                <p class="invite-couple">어연걸 ♥ 김소정</p>
-                <div class="divider-small"></div>
-                <h1 class="invite-title">결혼식에 초대합니다</h1>
-                <p class="invite-date">2026. 09. 20</p>
-            </div>
-        </div>
+
+<!-- ═══ OPENING ═════════════════════════════════════════ -->
+<div id="opening" onclick="openEnvelope()">
+  <div class="op-petal">
+    <svg width="54" height="66" viewBox="0 0 54 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M27 64C27 64 5 48 5 28C5 14 15 3 27 3C39 3 49 14 49 28C49 48 27 64 27 64Z"
+            stroke="#C4907F" stroke-width="1" fill="rgba(196,144,127,0.06)"/>
+      <path d="M27 64C27 64 11 43 19 24C22 16 27 10 27 10C27 10 32 16 35 24C43 43 27 64 27 64Z"
+            stroke="#C4907F" stroke-width="1" fill="rgba(196,144,127,0.17)"/>
+      <line x1="27" y1="64" x2="27" y2="21"
+            stroke="#C4907F" stroke-width="0.7" stroke-dasharray="2.5 4"/>
+    </svg>
+  </div>
+  <p class="op-label">Wedding Invitation</p>
+  <h1 class="op-names">어연걸 &amp; 김소정</h1>
+  <p class="op-date">2026 · 09 · 20</p>
+  <p class="op-hint">화면을 터치해 청첩장을 열어보세요</p>
+</div>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- HERO: 배경사진 + 하단 문구 -->
+  <section id="hero">
+    <!-- 배경 사진: hero.jpg 파일을 같은 폴더에 넣어주세요 -->
+    <div class="hero-content">
+      <p class="hero-sub">Wedding Ceremony</p>
+      <h1 class="hero-names">어연걸 &amp; 김소정</h1>
+      <p class="hero-date">2026. 09. 20 (일) &nbsp;오후 1시 20분</p>
+      <p class="hero-venue">KU컨벤션웨딩홀</p>
     </div>
+  </section>
 
-    <main class="main-content" id="main">
-        <section class="section hero" id="hero">
-            <div class="hero-content">
-                <div class="countdown-box">
-                    <p class="countdown-label">D-DAY</p>
-                    <div class="countdown" id="countdown">
-                        <div class="countdown-item">
-                            <span class="countdown-num" id="days">000</span>
-                            <span class="countdown-unit">일</span>
-                        </div>
-                    </div>
-                </div>
-                <p class="hero-date">2026. 09. 20 (일)</p>
-                <h1 class="couple-names">어연걸 ♥ 김소정</h1>
-                <p class="hero-invite">Wedding Ceremony</p>
+  <!-- GREETING -->
+  <section class="section" id="greeting">
+    <div class="section-inner">
+      <span class="eyebrow">Invitation</span>
+      <h2 class="section-title">함께해주세요</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
+      <p class="greeting-text">
+        깊은 사랑으로 결혼합니다.<br>
+        저희 두 사람, 뜻깊은 결혼식을<br>
+        진행하게 되었습니다.<br><br>
+        바쁘신 가운데 시간을 내주셔서<br>
+        저희의 첫 걸음을 함께 해주세요.
+      </p>
+      <div class="couple-wrap">
+        <div class="person-card">
+          <p class="p-role">Groom</p>
+          <p class="p-name">어연걸</p>
+          <p class="p-parents">어연구 · 최숙자의 아들</p>
+        </div>
+        <div class="person-card">
+          <p class="p-role">Bride</p>
+          <p class="p-name">김소정</p>
+          <p class="p-parents">김영호 · 이명화의 딸</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CEREMONY: 달력 + 실시간 카운트다운 -->
+  <section class="section" id="event">
+    <div class="section-inner">
+      <span class="eyebrow">Ceremony</span>
+      <h2 class="section-title">예식 정보</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <!-- 달력 -->
+      <div class="calendar-widget">
+        <div class="cal-header">
+          <span class="cal-year">2026</span>
+          <span class="cal-month-name">9월</span>
+        </div>
+        <div class="cal-grid" id="calGrid"><!-- JS로 생성 --></div>
+      </div>
+
+      <!-- 장소/시간 -->
+      <div class="venue-badge">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <path d="M6.5 1C4 1 2 3 2 5.5C2 8.5 6.5 13 6.5 13C6.5 13 11 8.5 11 5.5C11 3 9 1 6.5 1Z"
+                stroke="#C4907F" stroke-width="1" fill="rgba(196,144,127,0.15)"/>
+          <circle cx="6.5" cy="5.5" r="1.8" stroke="#C4907F" stroke-width="0.9" fill="none"/>
+        </svg>
+        <span>KU컨벤션웨딩홀 &nbsp;·&nbsp; 오후 1시 20분</span>
+      </div>
+
+      <!-- 실시간 카운트다운 -->
+      <div class="countdown-wrap">
+        <div class="cntd-item">
+          <span class="cntd-num" id="cd-days">---</span>
+          <span class="cntd-lbl">일</span>
+        </div>
+        <span class="cntd-sep">:</span>
+        <div class="cntd-item">
+          <span class="cntd-num" id="cd-hours">--</span>
+          <span class="cntd-lbl">시간</span>
+        </div>
+        <span class="cntd-sep">:</span>
+        <div class="cntd-item">
+          <span class="cntd-num" id="cd-mins">--</span>
+          <span class="cntd-lbl">분</span>
+        </div>
+        <span class="cntd-sep">:</span>
+        <div class="cntd-item">
+          <span class="cntd-num" id="cd-secs">--</span>
+          <span class="cntd-lbl">초</span>
+        </div>
+      </div>
+      <p class="cntd-caption">결혼식까지 남은 시간</p>
+
+      <button class="cal-btn" onclick="addToCalendar()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <rect x="1" y="2" width="11" height="10" rx="1" stroke="currentColor" stroke-width="1"/>
+          <path d="M1 5L12 5" stroke="currentColor" stroke-width="1"/>
+          <path d="M4 1L4 3M9 1L9 3" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+        </svg>
+        캘린더에 추가
+      </button>
+    </div>
+  </section>
+
+  <!-- GALLERY: 스와이프 가능 -->
+  <section class="section" id="gallery">
+    <div class="section-inner">
+      <span class="eyebrow">Gallery</span>
+      <h2 class="section-title">함께한 순간들</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <div class="gallery-container" id="galleryContainer">
+        <div class="gallery-track" id="galleryTrack">
+          <div class="gallery-slide" onclick="openModal(0)">
+            <div class="gallery-placeholder">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="3" y="6" width="26" height="20" rx="2" stroke="#A89990" stroke-width="1.2"/>
+                <circle cx="12" cy="15" r="4" stroke="#A89990" stroke-width="1.2"/>
+                <path d="M3 22L9 16L13 20L19 14L29 22" stroke="#A89990" stroke-width="1.2"/>
+              </svg>
+              <p>사진 1</p>
             </div>
-        </section>
-
-        <section class="section greeting" id="greeting">
-            <div class="section-inner">
-                <p class="greeting-label">INVITATION</p>
-                <h2 class="section-title">함께해주세요</h2>
-                <div class="greeting-text">
-                    <p> 깊은 사랑으로 결혼합니다.</p>
-                    <p> 저희 두 사람, 올림픽 결혼식을</p>
-                    <p> 진행하게 되었습니다.</p>
-                    <p> 바쁘신 가운데 시간을 내주셔</p>
-                    <p> 저희의 첫 걸음을 함께 해주세요.</p>
-                </div>
-                <div class="couple-info-card">
-                    <div class="person">
-                        <p class="role">Groom</p>
-                        <p class="name">어연걸</p>
-                        <p class="parents">어연구 · 최숙자</p>
-                    </div>
-                    <div class="person">
-                        <p class="role">Bride</p>
-                        <p class="name">김소정</p>
-                        <p class="parents">김영호 · 이명화</p>
-                    </div>
-                </div>
+          </div>
+          <div class="gallery-slide" onclick="openModal(1)">
+            <div class="gallery-placeholder">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="3" y="6" width="26" height="20" rx="2" stroke="#A89990" stroke-width="1.2"/>
+                <circle cx="12" cy="15" r="4" stroke="#A89990" stroke-width="1.2"/>
+                <path d="M3 22L9 16L13 20L19 14L29 22" stroke="#A89990" stroke-width="1.2"/>
+              </svg>
+              <p>사진 2</p>
             </div>
-        </section>
-
-        <section class="section event-info" id="event">
-            <div class="section-inner">
-                <p class="event-label">CEREMONY</p>
-                <h2 class="section-title">예식 정보</h2>
-                
-                <div class="event-card">
-                    <div class="event-item">
-                        <div class="event-icon">💒</div>
-                        <div class="event-details">
-                            <h3>결혼식</h3>
-                            <p class="event-date">2026년 9월 20일 (일요일)</p>
-                            <p class="event-time">오후 1시 20분</p>
-                        </div>
-                    </div>
-                    
-                    <div class="event-item">
-                        <div class="event-icon">🏨</div>
-                        <div class="event-details">
-                            <h3>장소</h3>
-                            <p class="event-location">KU컨벤션웨딩홀</p>
-                            <p class="event-address">서울특별시</p>
-                        </div>
-                    </div>
-                    
-                    <div class="event-item">
-                        <div class="event-icon">🥂</div>
-                        <div class="event-details">
-                            <h3>리셉션</h3>
-                            <p class="event-date">같은 장소</p>
-                            <p class="event-time">오후 2시 30분</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="calendar-btn" onclick="addToCalendar()">
-                    📅 캘린더에 추가
-                </button>
+          </div>
+          <div class="gallery-slide" onclick="openModal(2)">
+            <div class="gallery-placeholder">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="3" y="6" width="26" height="20" rx="2" stroke="#A89990" stroke-width="1.2"/>
+                <circle cx="12" cy="15" r="4" stroke="#A89990" stroke-width="1.2"/>
+                <path d="M3 22L9 16L13 20L19 14L29 22" stroke="#A89990" stroke-width="1.2"/>
+              </svg>
+              <p>사진 3</p>
             </div>
-        </section>
+          </div>
+        </div>
+      </div>
+      <div class="gallery-dots" id="galleryDots">
+        <span class="dot active" data-idx="0"></span>
+        <span class="dot" data-idx="1"></span>
+        <span class="dot" data-idx="2"></span>
+      </div>
+      <p class="gallery-note">* 사진을 탭하면 크게 볼 수 있습니다</p>
+    </div>
+  </section>
 
-        <section class="section gallery" id="gallery">
-            <div class="section-inner">
-                <p class="gallery-label">GALLERY</p>
-                <h2 class="section-title">함께한 순간들</h2>
-                
-                <div class="gallery-grid">
-                    <div class="gallery-item"><div class="gallery-placeholder">📷</div></div>
-                    <div class="gallery-item"><div class="gallery-placeholder">📷</div></div>
-                    <div class="gallery-item"><div class="gallery-placeholder">📷</div></div>
-                </div>
-                <p class="gallery-note">* wedding photos will be displayed here</p>
-            </div>
-        </section>
+  <!-- 갤러리 풀스크린 모달 -->
+  <div class="gallery-modal" id="galleryModal">
+    <button class="gallery-close" onclick="closeModal()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M4 4L16 16M16 4L4 16" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="modal-slider" id="modalSlider">
+      <div class="modal-slide">
+        <div class="modal-placeholder">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="4" y="8" width="40" height="32" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <circle cx="18" cy="22" r="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M4 34L14 24L20 30L29 21L44 34" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-slide">
+        <div class="modal-placeholder">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="4" y="8" width="40" height="32" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <circle cx="18" cy="22" r="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M4 34L14 24L20 30L29 21L44 34" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-slide">
+        <div class="modal-placeholder">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect x="4" y="8" width="40" height="32" rx="2" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <circle cx="18" cy="22" r="6" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <path d="M4 34L14 24L20 30L29 21L44 34" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="modal-nav">
+      <button class="modal-arrow" id="modalPrev" onclick="modalPrev()">&#8249;</button>
+      <span class="modal-idx" id="modalIdx">1 / 3</span>
+      <button class="modal-arrow" id="modalNext" onclick="modalNext()">&#8250;</button>
+    </div>
+  </div>
 
-        <section class="section location" id="location">
-            <div class="section-inner">
-                <p class="location-label">LOCATION</p>
-                <h2 class="section-title">오시는 길</h2>
-                
-                <div class="map-container">
-                    <div class="map-placeholder">
-                        <p>📍 KU컨벤션웨딩홀</p>
-                        <p class="address-detail">서울특별시</p>
-                    </div>
-                </div>
+  <!-- LOCATION -->
+  <section class="section" id="location">
+    <div class="section-inner">
+      <span class="eyebrow">Location</span>
+      <h2 class="section-title">오시는 길</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
 
-                <div class="transport-info">
-                    <div class="transport-group">
-                        <h3>🚇 대중교통</h3>
-                        <p>지하철 2호선 을지로입구역 5번 출구 도보 5분</p>
-                    </div>
-                    <div class="transport-group">
-                        <h3>🚗 자차 이용</h3>
-                        <p>웨딩홀 전용 주차장 이용 가능</p>
-                    </div>
-                    <div class="transport-group">
-                        <h3>🅿️ 주차</h3>
-                        <p>지하 2층 Guest Parking (무료)</p>
-                    </div>
-                </div>
-                
-                <div class="location-buttons">
-                    <a href="https://map.kakaom.com" class="location-btn" target="_blank">🗺️카카오맵</a>
-                    <a href="https://naver.me/maps" class="location-btn" target="_blank">🗺️네이버지도</a>
-                </div>
-            </div>
-        </section>
+      <div class="map-box">
+        <svg width="30" height="34" viewBox="0 0 30 34" fill="none">
+          <path d="M15 2C9 2 4 7 4 13C4 21 15 32 15 32C15 32 26 21 26 13C26 7 21 2 15 2Z"
+                stroke="#C4907F" stroke-width="1.2" fill="rgba(240,221,215,0.5)"/>
+          <circle cx="15" cy="13" r="4" stroke="#9E6B5A" stroke-width="1.2" fill="none"/>
+        </svg>
+        <p>KU컨벤션웨딩홀</p>
+        <span>서울특별시</span>
+      </div>
 
-        <section class="section account" id="account">
-            <div class="section-inner">
-                <p class="account-label">GIFT</p>
-                <h2 class="section-title">마음 전하실 곳</h2>
-                <p class="account-desc">축하의 마음을 전하세요</p>
-                
-                <div class="account-card">
-                    <div class="account-item">
-                        <p class="account-role">신랑측</p>
-                        <p class="account-name">어연걸 (아버지)</p>
-                        <p class="account-bank">국민은행 123456-78901</p>
-                        <button class="copy-btn" onclick="copyAccount('12345678901')">복사</button>
-                    </div>
-                    <div class="account-item">
-                        <p class="account-role">신랑측</p>
-                        <p class="account-name">어연걸 (어머니)</p>
-                        <p class="account-bank">국민은행 123456-78902</p>
-                        <button class="copy-btn" onclick="copyAccount('12345678902')">복사</button>
-                    </div>
-                    <div class="account-item">
-                        <p class="account-role">신부측</p>
-                        <p class="account-name">김소정 (아버지)</p>
-                        <p class="account-bank">신한은행 987654-32100</p>
-                        <button class="copy-btn" onclick="copyAccount('98765432100')">복사</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <div class="transport">
+        <div class="tr-item">
+          <h4>🚇 &nbsp;지하철</h4>
+          <p>2호선 을지로입구역 5번 출구 도보 5분</p>
+        </div>
+        <div class="tr-item">
+          <h4>🚗 &nbsp;자가용</h4>
+          <p>웨딩홀 전용 주차장 이용 가능</p>
+        </div>
+        <div class="tr-item">
+          <h4>🅿️ &nbsp;주차</h4>
+          <p>지하 2층 Guest Parking (무료)</p>
+        </div>
+      </div>
 
-        <section class="section rsvp" id="rsvp">
-            <div class="section-inner">
-                <p class="rsvp-label">RSVP</p>
-                <h2 class="section-title">참석 여부</h2>
-                <p class="rsvp-desc">참석 여부를 알려주시면 감사하겠습니다.</p>
-                
-                <form class="rsvp-form" id="rsvpForm">
-                    <div class="form-group">
-                        <label for="guestName">이름 *</label>
-                        <input type="text" id="guestName" name="guestName" required placeholder="성함을 입력해주세요">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="attendance">참석 여부 *</label>
-                        <select id="attendance" name="attendance" required>
-                            <option value="">선택해주세요</option>
-                            <option value="yes">참석합니다</option>
-                            <option value="no">참석 불가능합니다</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="guests">참석 인원</label>
-                        <select id="guests" name="guests">
-                            <option value="1">본인 1명</option>
-                            <option value="2">2명</option>
-                            <option value="3">3명</option>
-                            <option value="4">4명</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="message">축하 메시지</label>
-                        <textarea id="message" name="message" placeholder="축하 메시지를 남겨주세요 (선택)" rows="3"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="rsvp-submit-btn">제출하기</button>
-                </form>
-                
-                <div class="rsvp-result" id="rsvpResult" style="display: none;">
-                    <p>감사합니다! 제출되었습니다.</p>
-                </div>
-            </div>
-        </section>
+      <div class="map-btns">
+        <a href="https://map.kakao.com" class="map-btn kakao" target="_blank" rel="noopener">카카오맵</a>
+        <a href="https://naver.me/maps" class="map-btn naver" target="_blank" rel="noopener">네이버지도</a>
+      </div>
+    </div>
+  </section>
 
-        <footer class="footer">
-            <button class="share-btn" onclick="shareLink()">
-                🔗 링크 공유하기
-            </button>
-            <p>어연걸 ♥ 김소정</p>
-            <p class="footer-date">2026. 09. 20</p>
-        </footer>
-    </main>
+  <!-- ACCOUNT: 신랑/신부 탭 -->
+  <section class="section" id="account">
+    <div class="section-inner">
+      <span class="eyebrow">Gift</span>
+      <h2 class="section-title">마음 전하실 곳</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
+      <p class="acc-desc">축하의 마음을 전해 주시면<br>소중히 간직하겠습니다.</p>
 
-    <script src="script.js"></script>
+      <div class="acc-tabs">
+        <button class="acc-tab active" id="tab-groom-btn" onclick="switchTab('groom')">신랑측</button>
+        <button class="acc-tab" id="tab-bride-btn" onclick="switchTab('bride')">신부측</button>
+      </div>
+
+      <!-- 신랑측 -->
+      <div class="acc-panel" id="panel-groom">
+        <div class="acc-item">
+          <div class="acc-info">
+            <p class="acc-tag">아버지</p>
+            <p class="acc-name">어연구</p>
+            <p class="acc-num">국민은행 &nbsp;123456-78901</p>
+          </div>
+          <div class="acc-actions">
+            <button class="copy-btn" onclick="copyAccount('12345678901', this)">복사</button>
+            <!-- 아래 href를 실제 카카오페이 링크로 교체하세요 -->
+            <a href="https://qr.kakaopay.com/KAKAO_LINK_HERE" class="pay-btn kakao-pay" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="3.5" fill="#3C1E1E"/><path d="M3.5 10C3.5 10 2 12 3 12.5C4 13 5.5 11 7 11C8.5 11 10 13 11 12.5C12 12 10.5 10 10.5 10H3.5Z" fill="#3C1E1E"/></svg>
+              카카오페이
+            </a>
+            <!-- 아래 href를 실제 토스 링크로 교체하세요 -->
+            <a href="https://toss.me/TOSS_ID_HERE" class="pay-btn toss-pay" target="_blank" rel="noopener">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M2 5C2 3.3 3.3 2 5 2H9C10.7 2 12 3.3 12 5C12 6.7 10.7 8 9 8H5C3.3 8 2 6.7 2 5Z" fill="white"/></svg>
+              토스
+            </a>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-info">
+            <p class="acc-tag">어머니</p>
+            <p class="acc-name">최숙자</p>
+            <p class="acc-num">국민은행 &nbsp;123456-78902</p>
+          </div>
+          <div class="acc-actions">
+            <button class="copy-btn" onclick="copyAccount('12345678902', this)">복사</button>
+            <a href="https://qr.kakaopay.com/KAKAO_LINK_HERE" class="pay-btn kakao-pay" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="3.5" fill="#3C1E1E"/><path d="M3.5 10C3.5 10 2 12 3 12.5C4 13 5.5 11 7 11C8.5 11 10 13 11 12.5C12 12 10.5 10 10.5 10H3.5Z" fill="#3C1E1E"/></svg>
+              카카오페이
+            </a>
+            <a href="https://toss.me/TOSS_ID_HERE" class="pay-btn toss-pay" target="_blank" rel="noopener">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M2 5C2 3.3 3.3 2 5 2H9C10.7 2 12 3.3 12 5C12 6.7 10.7 8 9 8H5C3.3 8 2 6.7 2 5Z" fill="white"/></svg>
+              토스
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 신부측 -->
+      <div class="acc-panel" id="panel-bride" style="display:none">
+        <div class="acc-item">
+          <div class="acc-info">
+            <p class="acc-tag">아버지</p>
+            <p class="acc-name">김영호</p>
+            <p class="acc-num">신한은행 &nbsp;987654-32100</p>
+          </div>
+          <div class="acc-actions">
+            <button class="copy-btn" onclick="copyAccount('98765432100', this)">복사</button>
+            <a href="https://qr.kakaopay.com/KAKAO_LINK_HERE" class="pay-btn kakao-pay" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="3.5" fill="#3C1E1E"/><path d="M3.5 10C3.5 10 2 12 3 12.5C4 13 5.5 11 7 11C8.5 11 10 13 11 12.5C12 12 10.5 10 10.5 10H3.5Z" fill="#3C1E1E"/></svg>
+              카카오페이
+            </a>
+            <a href="https://toss.me/TOSS_ID_HERE" class="pay-btn toss-pay" target="_blank" rel="noopener">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M2 5C2 3.3 3.3 2 5 2H9C10.7 2 12 3.3 12 5C12 6.7 10.7 8 9 8H5C3.3 8 2 6.7 2 5Z" fill="white"/></svg>
+              토스
+            </a>
+          </div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-info">
+            <p class="acc-tag">어머니</p>
+            <p class="acc-name">이명화</p>
+            <!-- 실제 계좌 정보로 교체하세요 -->
+            <p class="acc-num">신한은행 &nbsp;000000-00000</p>
+          </div>
+          <div class="acc-actions">
+            <button class="copy-btn" onclick="copyAccount('00000000000', this)">복사</button>
+            <a href="https://qr.kakaopay.com/KAKAO_LINK_HERE" class="pay-btn kakao-pay" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5.5" r="3.5" fill="#3C1E1E"/><path d="M3.5 10C3.5 10 2 12 3 12.5C4 13 5.5 11 7 11C8.5 11 10 13 11 12.5C12 12 10.5 10 10.5 10H3.5Z" fill="#3C1E1E"/></svg>
+              카카오페이
+            </a>
+            <a href="https://toss.me/TOSS_ID_HERE" class="pay-btn toss-pay" target="_blank" rel="noopener">
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M2 5C2 3.3 3.3 2 5 2H9C10.7 2 12 3.3 12 5C12 6.7 10.7 8 9 8H5C3.3 8 2 6.7 2 5Z" fill="white"/></svg>
+              토스
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="section" id="rsvp">
+    <div class="section-inner">
+      <span class="eyebrow">RSVP</span>
+      <h2 class="section-title">참석 여부</h2>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-dot"></span>
+        <span class="ornament-line"></span>
+      </div>
+      <p class="rsvp-desc">참석 여부를 알려주시면 감사하겠습니다.</p>
+
+      <form class="rsvp-form" id="rsvpForm">
+        <div class="form-group">
+          <label for="guestName">이름 *</label>
+          <input type="text" id="guestName" name="guestName" required placeholder="성함을 입력해주세요">
+        </div>
+        <div class="form-group">
+          <label for="attendance">참석 여부 *</label>
+          <select id="attendance" name="attendance" required>
+            <option value="">선택해주세요</option>
+            <option value="yes">참석합니다</option>
+            <option value="no">참석이 어렵습니다</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="guests">참석 인원</label>
+          <select id="guests" name="guests">
+            <option value="1">본인 1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">축하 메시지</label>
+          <textarea id="message" name="message" placeholder="축하 메시지를 남겨주세요 (선택)" rows="3"></textarea>
+        </div>
+        <button type="submit" class="rsvp-submit">제 출 하 기</button>
+      </form>
+
+      <div class="rsvp-ok" id="rsvpResult" style="display:none">
+        <p>감사합니다 🤍</p>
+        <span>소중한 마음 잘 전달되었습니다.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <button class="share-btn" onclick="shareLink()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="11" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1"/>
+        <circle cx="3" cy="7" r="1.5" stroke="currentColor" stroke-width="1"/>
+        <circle cx="11" cy="11.5" r="1.5" stroke="currentColor" stroke-width="1"/>
+        <path d="M4.4 6.3L9.7 3.2M4.4 7.7L9.7 10.8" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      링크 공유하기
+    </button>
+    <p class="foot-names">어연걸 &amp; 김소정</p>
+    <p class="foot-date">2026 · 09 · 20</p>
+  </footer>
+
+</main>
+
+<script src="script.js"></script>
 </body>
 </html>
