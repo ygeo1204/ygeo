@@ -25,7 +25,7 @@ var CFG = {
   heroBg: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/KakaoTalk_20260308_195422244.webp',
   /* 갤러리 사진 배열 */
   photos: [
-    'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp','/KakaoTalk_20260308_195422244_02.jpg','/https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/KakaoTalk_20260308_195422244_03.jpg',
+    'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp','https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_02.webp','https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_03.webp',
     'photos/04.jpg','photos/05.jpg','photos/06.jpg',
     'photos/07.jpg','photos/08.jpg','photos/09.jpg','photos/10.jpg'
   ],
@@ -190,12 +190,16 @@ body{
 .cnt-grid{display:flex;justify-content:center;gap:8px}
 .cnt-box{
   background:#fff;border:1px solid #EEE6DC;border-radius:4px;
-  padding:12px 10px 8px;min-width:62px;
+  padding:14px 10px 12px;min-width:62px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 .cnt-num{
-  font-family:'Cormorant Garamond',serif;
-  font-size:32px;font-weight:400;color:#2A2018;
+  font-family:'Noto Serif KR',serif;
+  font-size:30px;font-weight:300;color:#2A2018;
   line-height:1;display:block;
+  font-variant-numeric:lining-nums tabular-nums;
+  font-feature-settings:"lnum" 1,"tnum" 1;
+  letter-spacing:1px;
 }
 .cnt-lbl{
   font-family:'Noto Serif KR',serif;
@@ -624,9 +628,9 @@ footer{
 <!-- LOCATION -->
 <section id="location" class="fi">
   <p class="sec-title">LOCATION</p>
-  <p style="font-size:14px;color:#2A2018;font-weight:400;margin-top:6px">더 그랜드볼룸 서울</p>
+  <p style="font-size:14px;color:#2A2018;font-weight:400;margin-top:6px">KU컨벤션웨딩홀</p>
   <p style="font-family:'Noto Serif KR',serif;font-size:12px;color:#9A8A78;margin-top:4px">
-    KU컨벤션웨딩홀 ⌂
+    서울 광진구 아차산로36길 5 ⌂
   </p>
   <div class="map-frame">
     <svg viewBox="0 0 382 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:180px;display:block">
@@ -656,40 +660,40 @@ footer{
         <circle cy="-14" r="5.5" fill="#FFF" opacity=".95"/>
       </g>
       <rect x="112" y="120" width="158" height="22" rx="2" fill="#FFF" opacity=".9"/>
-      <text x="191" y="135" text-anchor="middle" font-size="11" fill="#5A4A38" font-family="Apple SD Gothic Neo,sans-serif" letter-spacing=".5">더 그랜드볼룸 서울</text>
+      <text x="191" y="135" text-anchor="middle" font-size="11" fill="#5A4A38" font-family="Apple SD Gothic Neo,sans-serif" letter-spacing=".5">KU컨벤션웨딩홀</text>
     </svg>
   </div>
   <div class="map-nav-row">
-    <a class="map-btn naver" href="https://map.naver.com/v5/search/더그랜드볼룸" target="_blank">🗺 네이버</a>
-    <a class="map-btn tmap" href="https://apis.openapi.sk.com/tmap/app/routes?appKey=test&name=더그랜드볼룸서울" target="_blank">🚗 T MAP</a>
+    <a class="map-btn naver" href="https://naver.me/GRo4nDpY" target="_blank">🗺 네이버</a>
+    <a class="map-btn tmap" href="tmap://search?searchKeyword=서울 광진구 아차산로36길 5" onclick="tmapOpen(event)">🚗 T MAP</a>
   </div>
   <div class="transport">
     <div class="t-item">
       <div class="t-icon">🚇</div>
       <div class="t-content">
         <p class="t-label">지하철</p>
-        <p class="t-text">2호선 강남역 3번 출구 도보 5분<br>신분당선 강남역 6번 출구 도보 3분</p>
+        <p class="t-text">2호선 · 7호선 건대입구역 2번 출구 도보 15분<br>5호선 아차산역 4번 출구 도보 10분</p>
       </div>
     </div>
     <div class="t-item">
       <div class="t-icon">🚌</div>
       <div class="t-content">
         <p class="t-label">버스</p>
-        <p class="t-text">강남역 정류장 · 140, 144, 360, 740번</p>
+        <p class="t-text">아차산역 정류장 하차<br>2016, 3217, 240, 749번</p>
       </div>
     </div>
     <div class="t-item">
       <div class="t-icon">🅿</div>
       <div class="t-content">
         <p class="t-label">주차</p>
-        <p class="t-text">건물 내 지하주차장 · 예식 하객 2시간 무료</p>
+        <p class="t-text">KU컨벤션 건물 내 주차 가능 (유료)<br>건대입구역 인근 공영주차장 이용 가능</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ACCOUNT -->
-<section id="account" class="fi">
+<section id="account" class="fi" style="text-align:center">
   <p class="sec-title">마음 전하실 곳</p>
   <p class="acc-intro" style="margin-top:8px">
     참석이 어려우신 분들을 위해 기재했습니다<br>
@@ -1043,7 +1047,7 @@ window.shareKakao = function(){
       objectType:'feed',
       content:{
         title:'김민준 ♥ 이서연 결혼합니다',
-        description:'2026년 8월 22일 토요일 오후 2시 · 더 그랜드볼룸 서울',
+        description:'2026년 9월 20일 일요일 오후 1시 20분 · KU컨벤션웨딩홀',
         imageUrl: CFG.heroBg || '',
         link:{mobileWebUrl:url, webUrl:url}
       }
@@ -1053,6 +1057,22 @@ window.shareKakao = function(){
     var kakaoUrl = 'kakaolink://send?text='+encodeURIComponent('김민준 ♥ 이서연 청첩장\n'+url);
     window.location.href = kakaoUrl;
     setTimeout(function(){ copyText(url); showToast('카카오톡이 없어 주소를 복사했습니다'); }, 800);
+  }
+};
+
+/* ── T MAP ── */
+window.tmapOpen = function(e){
+  e.preventDefault();
+  var appUrl = 'tmap://search?searchKeyword='+encodeURIComponent('서울 광진구 아차산로36길 5');
+  var webUrl = 'https://naver.me/GRo4nDpY';
+  var ua = navigator.userAgent || '';
+  /* iOS: Universal Link 방식, Android: Intent 방식 */
+  var isAndroid = /Android/i.test(ua);
+  if(isAndroid){
+    window.location.href = 'intent://search?searchKeyword='+encodeURIComponent('서울 광진구 아차산로36길 5')+'#Intent;scheme=tmap;package=com.skt.tmap.ku;end';
+  } else {
+    window.location.href = appUrl;
+    setTimeout(function(){ window.open(webUrl,'_blank'); }, 1500);
   }
 };
 
@@ -1088,6 +1108,173 @@ function checkFi(){
 }
 checkFi(); window.addEventListener('scroll',checkFi,{passive:true});
 
+})();
+</script>
+
+<!-- ── INTRO SPLASH ── -->
+<div id="intro">
+  <div id="intro-inner">
+    <div id="intro-ring"></div>
+    <p id="intro-date">2026 · 09 · 20</p>
+    <p id="intro-names">어연걸 &amp; 김소정</p>
+    <p id="intro-en">Auh YeonGeol &amp; Kim Sojung</p>
+    <div id="intro-line"></div>
+    <p id="intro-sub">결혼합니다</p>
+  </div>
+</div>
+
+<!-- ── PETAL CANVAS ── -->
+<canvas id="petal-canvas"></canvas>
+
+<style>
+/* intro */
+#intro{
+  position:fixed;inset:0;z-index:9000;
+  background:#F2EDE3;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .9s ease;
+}
+#intro.hide{opacity:0;pointer-events:none}
+#intro-inner{
+  text-align:center;padding:0 28px;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .7s ease .3s,transform .7s ease .3s;
+}
+#intro-inner.show{opacity:1;transform:translateY(0)}
+#intro-ring{
+  width:72px;height:72px;border-radius:50%;
+  border:1px solid rgba(196,168,120,.4);
+  margin:0 auto 24px;
+  position:relative;
+}
+#intro-ring::before{
+  content:'';position:absolute;inset:6px;
+  border-radius:50%;
+  border:1px solid rgba(196,168,120,.25);
+}
+#intro-ring::after{
+  content:'✦';
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:18px;color:#C4A878;
+  line-height:1;
+}
+#intro-date{
+  font-family:'Noto Serif KR',serif;
+  font-size:11px;color:#9A8A78;letter-spacing:4px;margin-bottom:18px;
+}
+#intro-names{
+  font-family:'Noto Serif KR',serif;
+  font-size:24px;font-weight:400;color:#2A2018;
+  letter-spacing:4px;margin-bottom:6px;
+}
+#intro-en{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:13px;color:#9A8A78;
+  letter-spacing:2px;margin-bottom:20px;
+}
+#intro-line{
+  width:28px;height:1px;background:#C4A878;
+  margin:0 auto 14px;opacity:.5;
+}
+#intro-sub{
+  font-family:'Noto Serif KR',serif;
+  font-size:13px;color:#8A7A68;letter-spacing:3px;
+}
+/* petal canvas */
+#petal-canvas{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:1;
+  opacity:.55;
+}
+</style>
+
+<script>
+(function(){
+  /* ── Intro ── */
+  var intro = document.getElementById('intro');
+  var inner = document.getElementById('intro-inner');
+  requestAnimationFrame(function(){
+    inner.classList.add('show');
+  });
+  setTimeout(function(){
+    intro.classList.add('hide');
+    setTimeout(function(){ intro.style.display='none'; }, 950);
+  }, 2800);
+
+  /* ── Falling Petals Canvas ── */
+  var canvas = document.getElementById('petal-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  var petals = [];
+  var PETAL_COUNT = 18;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, {passive:true});
+
+  function Petal(){
+    this.reset(true);
+  }
+  Petal.prototype.reset = function(initial){
+    this.x = Math.random() * W;
+    this.y = initial ? Math.random() * H * 1.2 : -20;
+    this.r = 3 + Math.random() * 5;
+    this.rot = Math.random() * Math.PI * 2;
+    this.rotSpeed = (Math.random() - 0.5) * 0.03;
+    this.vx = (Math.random() - 0.5) * 0.6;
+    this.vy = 0.5 + Math.random() * 1.0;
+    this.alpha = 0.4 + Math.random() * 0.5;
+    /* petal colour: pink or cream */
+    var c = Math.random() > 0.5;
+    this.color = c ? 'rgba(230,190,185,' : 'rgba(210,185,160,';
+  };
+  Petal.prototype.update = function(){
+    this.x += this.vx + Math.sin(this.y * 0.012) * 0.3;
+    this.y += this.vy;
+    this.rot += this.rotSpeed;
+    if(this.y > H + 20) this.reset(false);
+  };
+  Petal.prototype.draw = function(){
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rot);
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color + this.alpha + ')';
+    /* ellipse petal shape */
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.r, this.r * 1.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  for(var i=0;i<PETAL_COUNT;i++){
+    var p = new Petal();
+    petals.push(p);
+  }
+
+  var animating = true;
+  function loop(){
+    if(!animating) return;
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<petals.length;i++){
+      petals[i].update();
+      petals[i].draw();
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  /* pause when tab hidden (battery saver) */
+  document.addEventListener('visibilitychange',function(){
+    animating = !document.hidden;
+    if(animating) loop();
+  });
 })();
 </script>
 </body>
