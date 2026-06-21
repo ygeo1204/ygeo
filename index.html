@@ -7,9 +7,21 @@
 <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>어연걸 ♥ 김소정 결혼합니다</title>
+<!-- Open Graph / KakaoTalk 미리보기 카드 -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="어연걸 ♥ 김소정 결혼합니다">
 <meta property="og:title" content="어연걸 ♥ 김소정 결혼합니다">
 <meta property="og:description" content="2026년 9월 20일 일요일 오후 1시 20분 · KU컨벤션웨딩홀">
+<meta property="og:url" content="https://ygeo1204.github.io/ygeo/">
+<meta property="og:image" content="https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ko_KR">
+<!-- Twitter Card (카카오 일부 버전에서 참조) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="어연걸 ♥ 김소정 결혼합니다">
+<meta name="twitter:description" content="2026년 9월 20일 일요일 오후 1시 20분 · KU컨벤션웨딩홀">
+<meta name="twitter:image" content="https://yourusername.github.io/wedding/photos/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
@@ -22,28 +34,28 @@
 <script>
 var CFG = {
   /* 히어로 사진 URL (없으면 기본 배경) */
-  heroBg: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_03.webp',
+  heroBg: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp',
   /* WEDDING DAY 위 중간 사진 URL (없으면 heroBg 사용) */
-  midPhoto: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp',
+  midPhoto: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_02.webp',
   /* 축하 연락하기 연락처 (전화번호가 없으면 빈 문자열 '') */
   contacts: {
-    groom:       { name:'어연걸',  role:'신랑',       tel:'010-4023-6189' },
+    groom:       { name:'어연걸',  role:'신랑',       tel:'' },
     groomFather: { name:'어윤영',  role:'신랑 아버지', tel:'' },
     groomMother: { name:'남미영',  role:'신랑 어머니', tel:'' },
-    bride:       { name:'김소정',  role:'신부',       tel:'010-9895-4717' },
+    bride:       { name:'김소정',  role:'신부',       tel:'' },
     brideFather: { name:'김상호',  role:'신부 아버지', tel:'' },
     brideMother: { name:'민경일',  role:'신부 어머니', tel:'' }
   },
   /* 갤러리 사진 배열 */
   photos: [
-    'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp','https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_02.webp','https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_03.webp',
+    'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp','photos/KakaoTalk_20260308_195422244_02.jpg','photos/https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/KakaoTalk_20260308_195422244_03.jpg',
     'photos/04.jpg','photos/05.jpg','photos/06.jpg',
     'photos/07.jpg','photos/08.jpg','photos/09.jpg','photos/10.jpg'
   ],
   /* 하단 문구 배경 사진 URL (없으면 heroBg 사용) */
   quotePhoto: 'https://raw.githubusercontent.com/ygeo1204/ygeo/refs/heads/main/AhaConvert_KakaoTalk_20260308_195422244_01.webp',
   /* 배경음악 URL (mp3/ogg) - 없으면 빈 문자열 */
-  music: 'music/bgm.mp3',
+  music: '/어디서들어본듯한디즈니＿김빵식.mp3',
   /* 예식 일시 (ISO 8601) */
   weddingDate: '2026-09-20T13:20:00+09:00',
   /* 카카오 공유 링크 (GitHub Pages 주소로 변경) */
@@ -988,7 +1000,7 @@ footer{
     </div>
   </div>
   <div class="quote-body">
-    <p class="quote-text">사랑은 당신을 바꾸는 게 아니라,<br>당신을 더 당신답게 만드는 거예요.</p>
+    <p class="quote-text">사랑은 당신을 바꾸는게 아니라,<br>당신을 더 당신답게 만드는 거예요.</p>
     <p class="quote-source">/ 영화, 〈어바웃 타임〉 中</p>
   </div>
 </section>
@@ -1298,7 +1310,7 @@ window.shareKakao = function(){
     window.Kakao.Share.sendDefault({
       objectType:'feed',
       content:{
-        title:'김민준 ♥ 이서연 결혼합니다',
+        title:'어연걸 ♥ 김소정 결혼합니다',
         description:'2026년 9월 20일 일요일 오후 1시 20분 · KU컨벤션웨딩홀',
         imageUrl: CFG.heroBg || '',
         link:{mobileWebUrl:url, webUrl:url}
@@ -1306,7 +1318,7 @@ window.shareKakao = function(){
     });
   } else {
     /* 카카오톡 앱으로 전달 (링크 공유) */
-    var kakaoUrl = 'kakaolink://send?text='+encodeURIComponent('김민준 ♥ 이서연 청첩장\n'+url);
+    var kakaoUrl = 'kakaolink://send?text='+encodeURIComponent('어연걸 ♥ 김소정 청첩장\n'+url);
     window.location.href = kakaoUrl;
     setTimeout(function(){ copyText(url); showToast('카카오톡이 없어 주소를 복사했습니다'); }, 800);
   }
